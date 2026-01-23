@@ -1,4 +1,7 @@
 using Scalar.AspNetCore;
+using CarLot.Listings.Application;
+using CarLot.Listings.Domain;
+using CarLot.Listings.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services
+    .AddApplication(builder.Configuration)
+    .AddDomain(builder.Configuration)
+    .AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
