@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Catalog/">
+    <Project Path="src/CarLot.Catalog/CarLot.Catalog.API/CarLot.Catalog.API.csproj" Id="8551108c-0d86-41aa-9a37-6cbf132a3abe" />
+    <Project Path="src/CarLot.Catalog/CarLot.Catalog.Application/CarLot.Catalog.Application.csproj" Id="8df5f8b6-564b-4c7f-adf2-4644bdf4145e" />
+    <Project Path="src/CarLot.Catalog/CarLot.Catalog.Domain/CarLot.Catalog.Domain.csproj" Id="984d3163-8fdb-4ea5-97f9-a7279f2888c3" />
+    <Project Path="src/CarLot.Catalog/CarLot.Catalog.Infrastructure/CarLot.Catalog.Infrastructure.csproj" Id="1fbb4c20-5a1d-4fbe-a963-670b8d3027cf" />
+  </Folder>
+  <Folder Name="/Listings/">
+    <Project Path="src/CarLot.Listings/CarLot.Listings.API/CarLot.Listings.API.csproj" Id="9c77b348-052c-4cc6-ade6-32858fa0d867" />
+    <Project Path="src/CarLot.Listings/CarLot.Listings.Application/CarLot.Listings.Application.csproj" Id="69379aa3-4b47-4ee7-87db-a41f2c979985" />
+    <Project Path="src/CarLot.Listings/CarLot.Listings.Domain/CarLot.Listings.Domain.csproj" Id="a6dbaad6-bc24-4242-be56-50a3dad73d94" />
+    <Project Path="src/CarLot.Listings/CarLot.Listings.Infrastructure/CarLot.Listings.Infrastructure.csproj" Id="82e80afa-d0c4-4f34-80af-f5b9c5e2cf3b" />
+  </Folder>
+</Solution>
