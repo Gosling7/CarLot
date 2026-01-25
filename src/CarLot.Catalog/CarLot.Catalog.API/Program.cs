@@ -12,8 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services
-    .AddApplication(builder.Configuration)
     .AddDomain(builder.Configuration)
+    .AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
