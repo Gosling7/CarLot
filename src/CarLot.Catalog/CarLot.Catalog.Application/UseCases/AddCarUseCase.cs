@@ -5,17 +5,17 @@ namespace CarLot.Catalog.Application.UseCases;
 
 public class AddCarUseCase
 {
-    private readonly ICarRepository _carRepository;
+    //private readonly ICarRepository _carRepository;
 
-    public AddCarUseCase(ICarRepository carRepository)
-    {
-        _carRepository = carRepository;
-    }
+    //public AddCarUseCase(ICarRepository carRepository)
+    //{
+    //    _carRepository = carRepository;
+    //}
 
-    public async Task<Guid> ExecuteAsync(Car car)
-    {
-        await _carRepository.AddAsync(car);
+    //public async Task<Guid> ExecuteAsync(Car car)
+    //{
+    //    await _carRepository.AddAsync(car);
 
-        return car.Id;
-    }
+    //    return car.Id;
+    //}
 }

@@ -11,4 +11,7 @@
     <Project Path="src/CarLot.Listings/CarLot.Listings.Domain/CarLot.Listings.Domain.csproj" Id="a6dbaad6-bc24-4242-be56-50a3dad73d94" />
     <Project Path="src/CarLot.Listings/CarLot.Listings.Infrastructure/CarLot.Listings.Infrastructure.csproj" Id="82e80afa-d0c4-4f34-80af-f5b9c5e2cf3b" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

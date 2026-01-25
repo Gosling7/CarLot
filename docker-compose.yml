@@ -1,0 +1,20 @@
+services:
+  carlot.catalog.api:
+    image: ${DOCKER_REGISTRY-}carlotcatalogapi
+    build:
+      context: .
+      dockerfile: src/CarLot.Catalog/CarLot.Catalog.API/Dockerfile
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-CU21-ubuntu-22.04
+    container_name: carlot-mssql
+    environment:
+      SA_PASSWORD: "Password1!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      -  carlot-mssql-data:/var/opt/mssql
+
+volumes:
+  carlot-mssql-data:

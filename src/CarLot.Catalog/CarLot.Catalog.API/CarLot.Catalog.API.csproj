@@ -4,15 +4,21 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>f851c438-6280-49fa-a44e-989583d7dc48</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.12.14" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CarLot.Catalog.Application\CarLot.Catalog.Application.csproj" />
+    <ProjectReference Include="..\CarLot.Catalog.Infrastructure\CarLot.Catalog.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
