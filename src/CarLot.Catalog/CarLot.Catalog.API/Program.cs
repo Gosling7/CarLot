@@ -25,6 +25,12 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
+    await seeder.EnsureDatabaseInitializedAsync();
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

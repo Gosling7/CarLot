@@ -1,4 +1,5 @@
-﻿using CarLot.Catalog.Application.UseCases;
+﻿using CarLot.Catalog.Application.DataTransferObjects;
+using CarLot.Catalog.Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarLot.Catalog.API.Controllers;
@@ -7,17 +8,17 @@ namespace CarLot.Catalog.API.Controllers;
 [Route("api/[controller]")]
 public class CarsController : ControllerBase
 {
-    //private readonly AddCarUseCase _addCarUseCase;
+    private readonly AddCarUseCase _addCarUseCase;
 
-    //public CarsController(AddCarUseCase addCarUseCase)
-    //{
-    //    _addCarUseCase = addCarUseCase;
-    //}
+    public CarsController(AddCarUseCase addCarUseCase)
+    {
+        _addCarUseCase = addCarUseCase;
+    }
 
-    //[HttpPost]
-    //public async Task<IActionResult> AddCar([FromBody] Domain.Entities.Car car)
-    //{
-    //    var carId = await _addCarUseCase.ExecuteAsync(car);
-    //    return CreatedAtAction(nameof(AddCar), new { id = carId }, null);
-    //}
+    [HttpPost]
+    public async Task<IActionResult> AddCar([FromBody] AddCarRequest request)
+    {
+        var carId = await _addCarUseCase.ExecuteAsync(request);
+        return CreatedAtAction(nameof(AddCar), new { id = carId }, null);
+    }
 }

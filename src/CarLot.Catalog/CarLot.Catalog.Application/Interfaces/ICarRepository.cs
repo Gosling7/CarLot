@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CarLot.Catalog.Application.Interfaces;
+﻿namespace CarLot.Catalog.Application.Interfaces;
 
 public interface ICarRepository
 {

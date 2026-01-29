@@ -5,6 +5,7 @@
     <Project Path="src/CarLot.Catalog/CarLot.Catalog.Domain/CarLot.Catalog.Domain.csproj" Id="984d3163-8fdb-4ea5-97f9-a7279f2888c3" />
     <Project Path="src/CarLot.Catalog/CarLot.Catalog.Infrastructure/CarLot.Catalog.Infrastructure.csproj" Id="1fbb4c20-5a1d-4fbe-a963-670b8d3027cf" />
   </Folder>
+  <Folder Name="/Gateway/" />
   <Folder Name="/Listings/">
     <Project Path="src/CarLot.Listings/CarLot.Listings.API/CarLot.Listings.API.csproj" Id="9c77b348-052c-4cc6-ade6-32858fa0d867" />
     <Project Path="src/CarLot.Listings/CarLot.Listings.Application/CarLot.Listings.Application.csproj" Id="69379aa3-4b47-4ee7-87db-a41f2c979985" />
