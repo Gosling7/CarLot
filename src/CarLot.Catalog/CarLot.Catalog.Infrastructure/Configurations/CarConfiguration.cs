@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarLot.Catalog.Infrastructure.Configurations;
 
-internal class CarConfiguration : IEntityTypeConfiguration<CarDAO>
+internal class CarConfiguration : IEntityTypeConfiguration<CarDao>
 {
-    public void Configure(EntityTypeBuilder<CarDAO> builder)
+    public void Configure(EntityTypeBuilder<CarDao> builder)
     {
         builder.ToTable("Cars")
             .HasKey(c => c.Id);

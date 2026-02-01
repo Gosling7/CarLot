@@ -5,7 +5,7 @@ namespace CarLot.Catalog.Infrastructure;
 
 public class CatalogDbContext : DbContext
 {
-    public DbSet<CarDAO> Cars { get; set; }
+    public DbSet<CarDao> Cars { get; set; }
     public DbSet<EquipmentDao> Equipment { get; set; }
     public DbSet<CarEquipmentDao> CarEquipment { get; set; }
     public DbSet<EquipmentCategoryDao> EquipmentCategories { get; set; }

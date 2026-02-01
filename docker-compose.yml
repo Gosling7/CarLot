@@ -1,6 +1,9 @@
 services:
   carlot.catalog.api:
     image: ${DOCKER_REGISTRY-}carlotcatalogapi
+    ports:
+      - 8080:8080
+      - 8081:8081
     build:
       context: .
       dockerfile: src/CarLot.Catalog/CarLot.Catalog.API/Dockerfile
@@ -16,5 +19,19 @@ services:
     volumes:
       -  carlot-mssql-data:/var/opt/mssql
 
+  seq:
+    image: datalust/seq:2025.2
+    container_name: carlot-seq
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORD=admin
+    restart: unless-stopped
+    volumes:
+      - seq-data:/data
+
 volumes:
   carlot-mssql-data:
+  seq-data: 
+    driver: local

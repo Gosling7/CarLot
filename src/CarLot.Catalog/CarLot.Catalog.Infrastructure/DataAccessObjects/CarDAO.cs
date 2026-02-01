@@ -2,7 +2,7 @@
 
 namespace CarLot.Catalog.Infrastructure.DataAccessObjects;
 
-public class CarDAO
+public class CarDao
 {
     public Guid Id { get; set; }
     public string VIN { get; set; } = null!;

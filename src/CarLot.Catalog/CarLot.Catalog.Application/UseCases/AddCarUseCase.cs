@@ -1,4 +1,4 @@
-﻿using CarLot.Catalog.Application.DataTransferObjects;
+﻿using CarLot.Catalog.Application.DTOs;
 using CarLot.Catalog.Application.Interfaces;
 using CarLot.Catalog.Domain.Entities;
 

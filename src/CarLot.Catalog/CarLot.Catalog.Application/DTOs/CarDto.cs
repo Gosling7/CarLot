@@ -1,15 +1,16 @@
 ﻿using CarLot.Catalog.Domain.Enums;
 
-namespace CarLot.Catalog.Application.DataTransferObjects;
+namespace CarLot.Catalog.Application.DTOs;
 
-public record AddCarRequest(
+public record CarDto(
+    Guid Id,
     string Vin,
     string Make,
     string Model,
     int Year,
     FuelType FuelType,
-    AdditionalFuelType AdditionalFuelType,
     TransmissionType Transmission,
+    AdditionalFuelType AdditionalFuelType,
     int PowerHp,
     float? EngineDisplacement,
     bool Turbocharged,
@@ -18,4 +19,9 @@ public record AddCarRequest(
     Domain.Enums.DriveType DriveType,
     int MileageKm,
     string Location,
-    IEnumerable<string> EquipmentCodes);
+    int Version,
+    DateTime CreatedAtUtc,
+    DateTime? UpdatedAtUtc,
+    CarStatus Status,
+    IReadOnlyCollection<EquipmentDto> Equipment
+);

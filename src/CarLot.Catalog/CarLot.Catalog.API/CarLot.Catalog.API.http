@@ -1,6 +1,9 @@
-@CarLot.Catalog.API_HostAddress = http://localhost:5285
+@CarLot.Catalog.API_HostAddress = http://localhost:8080
 
 GET {{CarLot.Catalog.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{CarLot.Catalog.API_HostAddress}}/cars/9937E268-3BD4-4CAF-8719-B0F14C6AA827
+Accept: application/json
