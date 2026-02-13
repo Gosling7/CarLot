@@ -1,8 +1,11 @@
 ﻿using CarLot.Catalog.Application.DTOs;
 using CarLot.Catalog.Application.UseCases;
+using CarLot.Catalog.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarLot.Catalog.API.Controllers;
+
+public record TestRequest(FuelType FuelType, string Name);
 
 [ApiController]
 [Route("api/[controller]")]
@@ -20,6 +23,15 @@ public class CarsController : ControllerBase
         _addCarUseCase = addCarUseCase;
         _getCarUseCase = getCarUseCase;
         _deleteCarUseCase = deleteCarUseCase;
+    }
+
+    [HttpPost]
+    [Route("enum")]
+    public async Task<IActionResult> AddEnum([FromBody] TestRequest request)
+    {
+        Console.WriteLine(request);
+
+        return Ok();
     }
 
     [HttpPost]
@@ -41,7 +53,7 @@ public class CarsController : ControllerBase
     [HttpDelete]
     [Route("{carId}")]
     public async Task<IActionResult> DeleteCarById(string carId)
-    {        
+    {
         await _deleteCarUseCase.ExecuteAsync(carId);
         return NoContent();
     }

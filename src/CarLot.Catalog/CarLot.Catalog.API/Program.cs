@@ -16,6 +16,16 @@ builder.Services
     .AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration);
 
+const string CorsOrigin = "MyCorsOrigin";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CorsOrigin,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,6 +40,8 @@ using (var scope = app.Services.CreateScope())
     var seeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
     await seeder.EnsureDatabaseInitializedAsync();
 }
+
+app.UseCors(CorsOrigin);
 
 app.UseHttpsRedirection();
 

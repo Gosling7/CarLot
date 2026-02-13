@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@layer base {
+
+  input,
+  select,
+  textarea {
+    @apply border border-gray-300 rounded-lg px-2 py-1;
+  }
+}
