@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import Card from "../../components/Card";
 import StatCard from "../../components/StatCard";
+import { CreateListingForm } from "../listings/CreateListingForm";
+import { EditListingForm } from "../listings/EditListingForm";
 
 interface Listing {
   id: string;
@@ -49,8 +51,15 @@ export default function ListingsDashboardTab() {
         <h2>Actions</h2>
         <div className="flex gap-4">
 
-          <button className="btn">Create</button>
-          <button className="btn">Edit</button>
+          <button className="btn" onClick={() => document.getElementById('my_modal_4').showModal()}>Create</button>
+          <dialog id="my_modal_4" className="modal">
+            <CreateListingForm />
+          </dialog>
+
+          <button className="btn" onClick={() => document.getElementById('my_modal_5').showModal()}>Edit</button>
+          <dialog id="my_modal_5" className="modal">
+            <EditListingForm />
+          </dialog>
 
         </div>
 
@@ -68,23 +77,23 @@ export default function ListingsDashboardTab() {
         <Card label="Draft Listings">
           <ListingsTable rows={drafts} actionLabel="Edit" />
         </Card>
+      </div>
 
-        <div className="collapse bg-base-100 collapse-arrow border-base-300 border">
-          <input type="checkbox" />
-          <div className="collapse-title font-semibold">Live Listings</div>
-          <div className="collapse-content text-sm">
-            Pobrac ogloszenia dopiero po rozwinieciu
-            <ListingsTable rows={live} actionLabel="View" />
-          </div>
+      <div className="collapse bg-base-100 collapse-arrow border-base-300 border">
+        <input type="checkbox" />
+        <div className="collapse-title font-semibold">Live Listings</div>
+        <div className="collapse-content text-sm">
+          Pobrac ogloszenia dopiero po rozwinieciu
+          <ListingsTable rows={live} actionLabel="View" />
         </div>
+      </div>
 
-        <div className="collapse bg-base-100 collapse-arrow border-base-300 border">
-          <input type="checkbox" />
-          <div className="collapse-title font-semibold">Archived Listings</div>
-          <div className="collapse-content text-sm">
-            Pobrac ogloszenia dopiero po rozwinieciu
-            <ListingsTable rows={live} actionLabel="View" />
-          </div>
+      <div className="collapse bg-base-100 collapse-arrow border-base-300 border">
+        <input type="checkbox" />
+        <div className="collapse-title font-semibold">Archived Listings</div>
+        <div className="collapse-content text-sm">
+          Pobrac ogloszenia dopiero po rozwinieciu
+          <ListingsTable rows={live} actionLabel="View" />
         </div>
       </div>
     </div>

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState, type EventHandler } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Card from "../../components/Card";
-import Table from "../../components/Table";
 import StatCard from "../../components/StatCard";
 import { CarForm } from "../cars/CarForm";
+import { UpdateCarForm } from "../cars/UpdateCarForm";
+import { EditCarForm } from "../cars/EditCarForm";
 
 interface Car {
   vin: string;
@@ -100,14 +101,24 @@ export default function CarsDashboardTab() {
       <div className="p-4 bg-base-100 border border-base-300 rounded-xl">
         <h2>Actions</h2>
         <div className="flex gap-4">
-          <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>Add Car</button>
-          <dialog id="my_modal_2" className="modal">
+          <button className="btn" onClick={() => document.getElementById('my_modal_1').showModal()}>Add Car</button>
+          <dialog id="my_modal_1" className="modal">
             <CarForm />
           </dialog>
 
-          <ActionButton label="Update Car" />
+          <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>Update Car</button>
+          <dialog id="my_modal_2" className="modal">
+            <UpdateCarForm />
+          </dialog>
 
-          <ActionButton label="Complete Edit Car" />
+          <button className="btn" onClick={() => document.getElementById('my_modal_3').showModal()}>Full Car Edit</button>
+          <dialog id="my_modal_3" className="modal">
+            <EditCarForm />
+          </dialog>
+
+          {/* <ActionButton label="Update Car" /> */}
+
+          {/* <ActionButton label="Full Car Edit" /> */}
 
         </div>
 
