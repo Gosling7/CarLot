@@ -16,5 +16,5 @@ export interface AddCarRequest {
   driveType: DriveType;
   mileageKm: number;
   location: string;
-  equipment: ReadonlyArray<string>;
+  equipmentCodes: ReadonlyArray<string>;
 }

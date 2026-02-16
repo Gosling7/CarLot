@@ -4,11 +4,14 @@ import './index.css'
 import DashboardPage from "./pages/DashboardPage.tsx"
 import ListingDetailsPage from "./pages/ListingDetailsPage.tsx"
 import HomePage from "./pages/HomePage.tsx"
+import QueryProvider from "./providers/QueryProvider.tsx"
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <DashboardPage />
-    {/* <ListingDetailsPage /> */}
-    {/* <HomePage /> */}
+    <QueryProvider>
+      <DashboardPage />
+      {/* <ListingDetailsPage /> */}
+      {/* <HomePage /> */}
+    </QueryProvider>
   </StrictMode>
 )

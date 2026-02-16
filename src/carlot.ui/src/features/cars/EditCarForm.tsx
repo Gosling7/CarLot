@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Equipment } from "../../types/Types";
-import Input from "../../components/Input";
+import { Input } from "../../components/Input";
 import Select from "../../components/Select";
 
 type Car = {

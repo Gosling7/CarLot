@@ -75,7 +75,6 @@ internal static class CarMapper
     {
         return new CarEquipmentDao
         {
-            Id = carEquipment.Id,
             CarId = car.Id,
             EquipmentId = carEquipment.Id
         };

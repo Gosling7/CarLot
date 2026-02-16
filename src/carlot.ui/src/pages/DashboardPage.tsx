@@ -1,9 +1,10 @@
-import CarsDashboardTab from "../features/components/CarsDashboardTab";
-import ListingsDashboardTab from "../features/components/ListingsDashboardTab";
-import MainDashboardTab from "../features/components/MainDashboardTab";
+import CarsDashboardTab from "../features/cars/CarsDashboardTab";
+import ListingsDashboardTab from "../features/listings/ListingsDashboardTab";
+import MainDashboardTab from "../components/MainDashboardTab";
+
 
 export default function DashboardPage() {
-
+  console.log("DashboardPage rendered");
   return (
     <>
       {/* name of each tab group should be unique */}

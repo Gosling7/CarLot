@@ -143,7 +143,7 @@ namespace CarLot.Catalog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EquipmentCategories");
+                    b.ToTable("EquipmentCategories", (string)null);
                 });
 
             modelBuilder.Entity("CarLot.Catalog.Infrastructure.DataAccessObjects.EquipmentDao", b =>

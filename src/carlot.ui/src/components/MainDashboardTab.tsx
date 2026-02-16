@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import Card from "../../components/Card";
-import StatCard from "../../components/StatCard";
+import StatCard from "./StatCard";
+import Card from "./Card";
 
 interface Car {
   vin: string;

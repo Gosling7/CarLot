@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Card from "../../components/Card";
 import StatCard from "../../components/StatCard";
-import { CarForm } from "../cars/CarForm";
 import { UpdateCarForm } from "../cars/UpdateCarForm";
 import { EditCarForm } from "../cars/EditCarForm";
+import { AddCarForm } from "./AddCarForm";
 
 interface Car {
   vin: string;
@@ -24,6 +24,8 @@ const mockCars: Car[] = [
 ];
 
 export default function CarsDashboardTab() {
+  console.log("CarsDashboardTab rendered");
+
   const [search, setSearch] = useState("");
   //const [isAllCarsExpanded, setIsAllCarsExpanded] = useState(false);
   const [isAllCarsLoading, setIsAllCarsLoading] = useState(false);
@@ -103,7 +105,7 @@ export default function CarsDashboardTab() {
         <div className="flex gap-4">
           <button className="btn" onClick={() => document.getElementById('my_modal_1').showModal()}>Add Car</button>
           <dialog id="my_modal_1" className="modal">
-            <CarForm />
+            <AddCarForm />
           </dialog>
 
           <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>Update Car</button>

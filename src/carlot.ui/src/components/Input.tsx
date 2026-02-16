@@ -1,9 +1,11 @@
+import type { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
+
 interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 }
 
-export default function Input({ label, ...props }: InputProps) {
+export function InputOld({ label, ...props }: InputProps) {
   return (
     <div>
       {label && (
@@ -18,4 +20,27 @@ export default function Input({ label, ...props }: InputProps) {
       />
     </div>
   );
+}
+
+type Props = {
+  label: string;
+  type?: HTMLInputTypeAttribute;
+  placeholder?: string;
+  value: string | number;
+  onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement>;
+}
+
+export const Input = ({ label, type = "text", placeholder, value, onChange }: Props) => {
+  return (
+    <fieldset className="fieldset mx-2">
+      <legend className="fieldset-legend">{label}</legend>
+      <input
+        type={type}
+        className="input input-sm rounded-lg w-full"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+    </fieldset>
+  )
 }
