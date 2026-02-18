@@ -2,12 +2,15 @@ import { useState } from 'react'
 import type { Equipment } from "../../types/Types";
 import Select from "../../components/Select";
 import { Section } from "../../components/Section";
-import { Input } from "../../components/Input";
+import { Input, InputZod } from "../../components/Input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../../components/Form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import type { AddCarRequest } from "../../types/AddCarRequest";
 import { AdditionalFuelType, DriveType, FuelType, TransmissionType } from "../../types/CarDto";
+import { Controller, useForm } from "react-hook-form";
+import { AddCarSchema, type AddCarFormValues } from "../../validation/addCar.schema";
 
 const equipmentDummyData: Equipment[] = [
   { name: "Air Conditioning", code: "AC" },
@@ -55,30 +58,45 @@ export const AddCarForm = () => {
     equipmentCodes: [],
   };
 
-  const [car, setCar] = useState<AddCarRequest>(initialAddCarRequest);
+  const { data: equipment = [] } = useQuery<Equipment[]>({
+    queryKey: ["equipment"],
+    queryFn: async () => {
+      const response = await axios.get("api/equipment");
+      console.log(response.data);
+      return response.data;
+    }
+  });
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors }
+  } = useForm<AddCarFormValues>({
+    resolver: zodResolver(AddCarSchema),
+    defaultValues: initialAddCarRequest,
+    mode: "onBlur"
+  });
+
   const [equipmentSearch, setEquipmentSearch] = useState("");
-  const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
+  const equipmentCodes = watch("equipmentCodes") ?? [];
 
-  function handleChange<K extends keyof AddCarRequest>(key: K, value: AddCarRequest[K]) {
-    setCar((prev) => ({ ...prev, [key]: value } as AddCarRequest));
-  }
-
-  const filteredEquipment = equipmentDummyData.filter((e) =>
+  const filteredEquipment = equipment.filter((e) =>
     e.name.toLowerCase().includes(equipmentSearch.toLowerCase())
   );
   const sortedEquipment = [
-    ...filteredEquipment.filter((eq) => selectedCodes.includes(eq.code)),
-    ...filteredEquipment.filter((eq) => !selectedCodes.includes(eq.code))
+    ...filteredEquipment.filter((eq) => equipmentCodes.includes(eq.code)),
+    ...filteredEquipment.filter((eq) => !equipmentCodes.includes(eq.code))
   ];
 
   function onToggle(code: string) {
-    setCar((prev) => {
-      const current = prev.equipmentCodes ?? [];
-      const updated = current.includes(code)
-        ? current.filter(c => c !== code) // if already in the previous car state, then remove (so clicking an already checked checkbox)
-        : [...current, code];
-      return { ...prev, equipmentCodes: updated };
-    });
+    const current = watch("equipmentCodes") ?? [];
+    const updated = current.includes(code)
+      ? current.filter(c => c !== code)
+      : [...current, code];
+    setValue("equipmentCodes", updated);
   }
 
   const queryClient = useQueryClient();
@@ -94,17 +112,6 @@ export const AddCarForm = () => {
     }
   });
 
-  function handleSave() {
-    createCarMutation.mutate(car);
-  }
-
-  function enumToOptions<T extends object>(enumObj: T) {
-    Object.values(enumObj) as Array<T[keyof T]>;
-  }
-
-  //console.log(car);
-  console.log(enumToOptions(FuelType));
-
   return (
     <div className="modal-box max-w-6xl bg-base-200 animate-fadeIn relative overflow-y-auto max-h-[95vh]">
       <form method="dialog">
@@ -113,54 +120,100 @@ export const AddCarForm = () => {
         </button>
       </form>
 
-      <Form header="Add Car">
+      <form onSubmit={handleSubmit((data) => createCarMutation.mutate(data))}>
+        <Form header="Add Car">
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Left column */}
-          <Section header="Basic Info">
-            <Input label="VIN" value={car.vin} onChange={(e) => handleChange("vin", e.target.value)} />
-            <Input label="Make" value={car.make} onChange={(e) => handleChange("make", e.target.value)} />
-            <Input label="Model" value={car.model} onChange={(e) => handleChange("model", e.target.value)} />
-            <Input label="Year" type="number" value={car.year} onChange={(e) => handleChange("year", Number(e.target.value))} />
-            <Input label="Mileage" type="number" value={car.mileageKm} onChange={(e) => handleChange("mileageKm", Number(e.target.value))} />
-            <Input label="Location" value={car.location} onChange={(e) => handleChange("location", e.target.value)} />
-          </Section>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Left column */}
+            <Section header="Basic Info">
+              <InputZod label="VIN" {...register("vin")} error={errors.vin?.message} />
+              <InputZod label="Make" {...register("make")} error={errors.make?.message} />
+              <InputZod label="Model" {...register("model")} error={errors.model?.message} />
+              <InputZod label="Year" {...register("year", { valueAsNumber: true })} error={errors.year?.message} />
+              <InputZod label="Mileage" {...register("mileageKm", { valueAsNumber: true })} error={errors.mileageKm?.message} />
+              <InputZod label="Location" {...register("location")} error={errors.location?.message} />
+            </Section>
 
-          {/* Right column */}
-          <Section header="Engine & Details">
-            <Input label="Power (HP)" type="number" value={car.powerHp ?? ""} onChange={(e) => handleChange("powerHp", Number(e.target.value))} />
-            <Input label="Engine Displacement" type="number" value={car.engineDisplacement ?? ""} onChange={(e) => handleChange("engineDisplacement", Number(e.target.value))} />
-            <Select label="Fuel Type" options={FuelType} value={car.fuelType} onChange={(e) => handleChange("fuelType", e)} />
-            <Select label="Additional Fuel Type" options={AdditionalFuelType} value={car.additionalFuelType} onChange={(e) => handleChange("additionalFuelType", e)} />
-            <Select label="Transmission" options={TransmissionType} value={car.transmission} onChange={(e) => handleChange("transmission", e)} />
-            <Select label="Drive Type" options={DriveType} value={car.driveType} onChange={(e) => handleChange("driveType", e)} />
-            <Input label="Body Type" value={car.body} onChange={(e) => handleChange("body", e.target.value)} />
-            <Input label="Registration" value={car.registrationPlate} onChange={(e) => handleChange("registrationPlate", e.target.value)} />
-          </Section>
-        </div>
-
-        <Section header="Equipment">
-          <Input label="Search" placeholder="Search equipment..." value={equipmentSearch} onChange={(e) => setEquipmentSearch(e.target.value)} />
-          <div className="grid md:grid-cols-2 gap-2 max-h-100 overflow-y-auto mt-4">
-            {sortedEquipment.map((eq) => (
-              <label key={eq.code} className="flex items-center gap-2 px-3 py-1 rounded-lg hover:bg-base-200 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-sm"
-                  checked={car.equipmentCodes.includes(eq.code)}
-                  onChange={() => onToggle(eq.code)}
-                />
-                <span className="text-sm">{eq.name}</span>
-              </label>
-            ))}
+            {/* Right column */}
+            <Section header="Engine & Details">
+              <InputZod label="Power (HP)"  {...register("powerHp", { valueAsNumber: true })} error={errors.powerHp?.message} />
+              <InputZod label="Engine Displacement"  {...register("engineDisplacement", { valueAsNumber: true })} error={errors.engineDisplacement?.message} />
+              <Controller
+                name="transmission"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    label="Transmission"
+                    options={TransmissionType}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <Controller
+                name="additionalFuelType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    label="Additional Fuel Type"
+                    options={AdditionalFuelType}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <Controller
+                name="fuelType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    label="Fuel Type"
+                    options={FuelType}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <Controller
+                name="driveType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    label="Drive Type"
+                    options={DriveType}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <InputZod label="Body Type"  {...register("body")} error={errors.body?.message} />
+              <InputZod label="Registration"  {...register("registrationPlate")} error={errors.registrationPlate?.message} />
+            </Section>
           </div>
-        </Section>
 
-        <button className="btn btn-lg mt-6 w-full" type="button" onClick={handleSave}>
-          Save Changes
-        </button>
+          <Section header="Equipment">
+            <InputZod label="Search" placeholder="Search equipment..." value={equipmentSearch} onChange={(e) => setEquipmentSearch(e.target.value)} />
+            <div className="grid md:grid-cols-2 gap-2 max-h-100 overflow-y-auto mt-4">
+              {sortedEquipment.map((eq) => (
+                <label key={eq.code} className="flex items-center gap-2 px-3 py-1 rounded-lg hover:bg-base-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm"
+                    checked={equipmentCodes.includes(eq.code)}
+                    onChange={() => onToggle(eq.code)}
+                  />
+                  <span className="text-sm">{eq.name}</span>
+                </label>
+              ))}
+            </div>
+          </Section>
 
-      </Form >
+          <button className="btn btn-lg mt-6 w-full" type="submit">
+            Save Changes
+          </button>
+
+        </Form >
+      </form>
     </div>
   );
 }

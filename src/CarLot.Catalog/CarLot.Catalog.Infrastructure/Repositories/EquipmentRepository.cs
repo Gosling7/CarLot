@@ -1,4 +1,5 @@
-﻿using CarLot.Catalog.Application.Interfaces;
+﻿using CarLot.Catalog.Application.DTOs;
+using CarLot.Catalog.Application.Interfaces;
 using CarLot.Catalog.Domain.ValueObjects;
 using CarLot.Catalog.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -20,5 +21,10 @@ internal class EquipmentRepository : IEquipmentRepository
             .Where(e => equipmentCodes.Contains(e.Code))
             .Select(e => e.AsEntity())
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<EquipmentDto>> GetAllAsync()
+    {
+        return await _dbContext.Equipment.Select(e => e.ToDto()).ToListAsync();
     }
 }

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
+import type { ChangeEventHandler, HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
 
 interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -44,3 +44,25 @@ export const Input = ({ label, type = "text", placeholder, value, onChange }: Pr
     </fieldset>
   )
 }
+
+type PropsZod = {
+  label: string;
+  error?: string;
+} & InputHTMLAttributes<HTMLInputElement>;
+
+export const InputZod = ({ label, error, ...inputProps }: PropsZod) => {
+  return (
+    <fieldset className="fieldset mx-2">
+      <legend className="fieldset-legend">{label}</legend>
+
+      <input
+        className={`input input-sm rounded-lg w-full ${error ? "input-error" : ""}`}
+        {...inputProps}
+      />
+
+      {error && (
+        <p className="text-error text-sm mt-1">{error}</p>
+      )}
+    </fieldset>
+  );
+};

@@ -11,7 +11,8 @@ public static class DependencyInjection
         services
             .AddScoped<AddCarUseCase>()
             .AddScoped<GetCarUseCase>()
-            .AddScoped<DeleteCarUseCase>();
+            .AddScoped<DeleteCarUseCase>()
+            .AddScoped<GetEquipmentUseCase>();
 
         return services;
     }
