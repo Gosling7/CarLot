@@ -5,6 +5,7 @@ namespace CarLot.Catalog.Application.Interfaces;
 public interface ICarRepository
 {
     Task<Guid> AddAsync(Domain.Entities.Car car);
-    Task<CarDto> GetByIdAsync(Guid carId);
+    Task<CarDto?> GetByIdAsync(Guid carId);
+    Task<bool> IsVinAlreadyPresentAsync(string vin);
     Task DeleteAsync(Guid carId);
 }

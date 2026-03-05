@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 type Props = {
   label: string;
   options: any;
@@ -24,6 +26,32 @@ export const Select = ({ label, options, onChange }: Props) => {
     </fieldset>
   )
 }
+
+type SelectProps = {
+  label: string;
+  options: Record<string, string | number>;
+  ref?: Ref<HTMLSelectElement>;
+}
+
+export const SelectRHF = ({ label, options, ref }: SelectProps) => {
+  const enumNumberValues = getEnumNumberValues(options);
+
+  return (
+    <fieldset className="fieldset mx-2">
+      <legend className="fieldset-legend">{label}</legend>
+      <select
+        className="select select-sm rounded-lg w-full"
+        ref={ref}
+      >
+        {enumNumberValues.map(intValue => (
+          <option key={intValue} value={intValue}>
+            {options[intValue]}
+          </option>
+        ))}
+      </select>
+    </fieldset>
+  )
+};
 
 export default Select;
 

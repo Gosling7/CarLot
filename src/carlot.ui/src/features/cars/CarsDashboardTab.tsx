@@ -79,9 +79,8 @@ export default function CarsDashboardTab() {
     }
   }, [isArchivedCarsExpanded])
 
-  const needsListing = filteredCars.filter(c => c.status === "needs-listing");
-  const drafts = filteredCars.filter(c => c.status === "draft");
-  const live = filteredCars.filter(c => c.status === "live");
+  const needsListing = mockCars.filter(c => c.status === "needs-listing");
+  const live = mockCars.filter(c => c.status === "live");
   const needsEdit = filteredCars.filter(c => c.status === "needs-edit");
 
   return (
@@ -117,25 +116,12 @@ export default function CarsDashboardTab() {
           <dialog id="my_modal_3" className="modal">
             <EditCarForm />
           </dialog>
-
-          {/* <ActionButton label="Update Car" /> */}
-
-          {/* <ActionButton label="Full Car Edit" /> */}
-
         </div>
 
       </div>
 
-      <input
-        type="text"
-        placeholder="Search by VIN, make, model, year"
-        className="input border-base-300 shadow-none rounded-xl"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
-
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <Card label="Needs Edit">
+        <Card label="Need Edit">
           <CarsTable rows={needsEdit} actionLabel="Edit" />
         </Card>
         <Card label="Ready for Listing">
@@ -169,15 +155,6 @@ export default function CarsDashboardTab() {
       </div>
 
     </div >
-  );
-}
-
-function ActionButton({ label }) {
-  return (
-    <button className="btn">{label}</button>
-    // <div className="stat bg-base-100 border border-base-300 rounded-xl max-h-30 max-w-50">
-    //   <button className="btn">{label}</button>
-    // </div>
   );
 }
 

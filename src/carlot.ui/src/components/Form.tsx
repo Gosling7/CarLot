@@ -1,15 +1,16 @@
-import type { ReactNode } from "react";
+import type { ReactNode, SubmitEventHandler } from "react";
 
 type Props = {
   header: string;
   children: ReactNode;
+  onSubmit: SubmitEventHandler;
 };
 
-export const Form = ({ header, children }: Props) => {
+export const Form = ({ header, children, onSubmit }: Props) => {
   return (
-    <div className="grid gap-6">
+    <form onSubmit={onSubmit} className="grid gap-6">
       <h2 className="text-2xl font-bold text-center">{header}</h2>
       {children}
-    </div>
+    </form>
   );
 }

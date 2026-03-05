@@ -1,4 +1,7 @@
-﻿using CarLot.Catalog.Application.UseCases;
+﻿using CarLot.Catalog.Application.DTOs;
+using CarLot.Catalog.Application.UseCases;
+using CarLot.Catalog.Application.Validators;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,8 +13,12 @@ public static class DependencyInjection
     {
         services
             .AddScoped<AddCarUseCase>()
+            .AddScoped<IValidator<AddCarRequest>, AddCarRequestValidator>()
+
             .AddScoped<GetCarUseCase>()
+
             .AddScoped<DeleteCarUseCase>()
+
             .AddScoped<GetEquipmentUseCase>();
 
         return services;

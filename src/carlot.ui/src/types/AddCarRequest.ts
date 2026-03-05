@@ -1,4 +1,9 @@
-import type { AdditionalFuelType, DriveType, FuelType, TransmissionType } from "./CarDto";
+import type {
+  AdditionalFuelType,
+  DriveType,
+  FuelType,
+  TransmissionType,
+} from "./CarDto";
 
 export interface AddCarRequest {
   vin: string;
@@ -16,5 +21,5 @@ export interface AddCarRequest {
   driveType: DriveType;
   mileageKm: number;
   location: string;
-  equipmentCodes: ReadonlyArray<string>;
+  equipmentCodes: string[];
 }

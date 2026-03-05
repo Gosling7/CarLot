@@ -1,5 +1,6 @@
 ﻿using CarLot.Catalog.Application.DTOs;
 using CarLot.Catalog.Application.UseCases;
+using CarLot.Catalog.Domain;
 using CarLot.Catalog.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,9 +38,16 @@ public class CarsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddCar([FromBody] AddCarRequest request)
     {
-        var carId = await _addCarUseCase.ExecuteAsync(request);
+        var result = await _addCarUseCase.ExecuteAsync(request);
+
+        if (result.Errors.Any())
+        {
+            var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
+            return BadRequest(problemDetails);
+        }
+
         // TODO: zwracać id stworzonego auta 
-        return CreatedAtAction(nameof(AddCar), new { id = carId }, null);
+        return CreatedAtAction(nameof(AddCar), new { id = result }, null);
     }
 
     [HttpGet]
@@ -56,5 +64,31 @@ public class CarsController : ControllerBase
     {
         await _deleteCarUseCase.ExecuteAsync(carId);
         return NoContent();
+    }
+
+    public static ValidationProblemDetails CreateValidationProblemDetails(
+        HttpContext httpContext,
+        IEnumerable<Error> errors,
+        string title = "One or more validation errors occurred",
+        string type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+        int statusCode = StatusCodes.Status400BadRequest)
+    {
+        var errorsDict = errors
+            .GroupBy(error => error.PropertyName)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Select(error => error.ErrorMessage).ToArray());
+
+        var problemDetails = new ValidationProblemDetails(errorsDict)
+        {
+            Type = type,
+            Title = title,
+            Status = statusCode,
+            Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
+        };
+
+        problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
+
+        return problemDetails;
     }
 }

@@ -23,7 +23,7 @@ internal class CarRepository : ICarRepository
         return car.Id;
     }
 
-    public async Task<CarDto> GetByIdAsync(Guid carId)
+    public async Task<CarDto?> GetByIdAsync(Guid carId)
     {
         return await _dbContext.Cars
             .Include(c => c.Equipment)
@@ -32,6 +32,11 @@ internal class CarRepository : ICarRepository
             .Select(c => c.ToDto())
             .AsNoTracking()
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> IsVinAlreadyPresentAsync(string vin)
+    {
+        return await _dbContext.Cars.AnyAsync(c => c.VIN == vin);
     }
 
     public async Task DeleteAsync(Guid carId)

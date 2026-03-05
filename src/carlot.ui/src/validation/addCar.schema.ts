@@ -24,14 +24,14 @@ export const AddCarSchema = z.object({
   equipmentCodes: z.array(z.string())
 });
 
-export const VinSchema = z.object({
-  vin: z
-    .string()
-    .min(1, "VIN is required")
-    .min(17, "VIN must be 17 characters")
-    .max(17, "VIN must be 17 characters")
-});
+// export const VinSchema = z.object({
+//   vin: z
+//     .string()
+//     .min(1, "VIN is required")
+//     .min(17, "VIN must be 17 characters")
+//     .max(17, "VIN must be 17 characters")
+// });
 
-export type VinFormValues = z.infer<typeof VinSchema>;
+// export type VinFormValues = z.infer<typeof VinSchema>;
 
 export type AddCarFormValues = z.infer<typeof AddCarSchema>;
