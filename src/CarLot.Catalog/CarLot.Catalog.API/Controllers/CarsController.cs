@@ -14,15 +14,18 @@ public class CarsController : ControllerBase
 {
     private readonly AddCarUseCase _addCarUseCase;
     private readonly GetCarUseCase _getCarUseCase;
+    private readonly GetCarsUseCase _getCarsUseCase;
     private readonly DeleteCarUseCase _deleteCarUseCase;
 
     public CarsController(
         AddCarUseCase addCarUseCase,
         GetCarUseCase getCarUseCase,
+        GetCarsUseCase getCarsUseCase,
         DeleteCarUseCase deleteCarUseCase)
     {
         _addCarUseCase = addCarUseCase;
         _getCarUseCase = getCarUseCase;
+        _getCarsUseCase = getCarsUseCase;
         _deleteCarUseCase = deleteCarUseCase;
     }
 
@@ -48,6 +51,14 @@ public class CarsController : ControllerBase
 
         // TODO: zwracać id stworzonego auta 
         return CreatedAtAction(nameof(AddCar), new { id = result }, null);
+    }
+
+    [HttpGet]
+    [Route("")]
+    public async Task<ActionResult<IEnumerable<CarDto>>> GetCars()
+    {
+        var cars = await _getCarsUseCase.ExecuteAsync();
+        return Ok(cars);
     }
 
     [HttpGet]

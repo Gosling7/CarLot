@@ -34,6 +34,14 @@ internal class CarRepository : ICarRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<IEnumerable<CarDto>> GetAsync()
+    {
+        return await _dbContext.Cars
+            .Select(c => c.ToDto())
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
     public async Task<bool> IsVinAlreadyPresentAsync(string vin)
     {
         return await _dbContext.Cars.AnyAsync(c => c.VIN == vin);

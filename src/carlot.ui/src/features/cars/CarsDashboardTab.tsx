@@ -1,9 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import Card from "../../components/Card";
+import { ButtonWithModal } from "../../components/ButtonWithModal";
 import StatCard from "../../components/StatCard";
 import { UpdateCarForm } from "../cars/UpdateCarForm";
 import { EditCarForm } from "../cars/EditCarForm";
 import { AddCarForm } from "./AddCarForm";
+import { ActionsSection } from "../../components/ActionsSection";
+import { StatCardsSection } from "../../components/StatCardsSection";
+import { TablesSection } from "../../components/TablesSection";
+import { ExpandableSection } from "../../components/ExpandableSection";
+import { useFetchCars } from "./hooks/useFetchCars";
 
 interface Car {
   vin: string;
@@ -27,7 +33,6 @@ export default function CarsDashboardTab() {
   console.log("CarsDashboardTab rendered");
 
   const [search, setSearch] = useState("");
-  //const [isAllCarsExpanded, setIsAllCarsExpanded] = useState(false);
   const [isAllCarsLoading, setIsAllCarsLoading] = useState(false);
   const [isAllCarsFetched, setIsAllCarsFetched] = useState(false);
   const [isArchivedCarsExpanded, setIsArchivedCarsExpanded] = useState(false);
@@ -51,11 +56,8 @@ export default function CarsDashboardTab() {
     }, 1000);
   }
 
-
-
   function handleAllCarsExpand(e: React.ChangeEvent<HTMLInputElement>) {
     const checked = e.target.checked;
-    //setIsAllCarsExpanded(checked);
 
     if (checked && !isAllCarsFetched) {
       fetchCars();
@@ -63,6 +65,17 @@ export default function CarsDashboardTab() {
   }
 
   function fetchArchivedCars() {
+    /*
+      useQuery({enabled: isArchivedExpanded})
+      start with enabled: false, true when expanding the section
+      for both lists
+
+        const {
+          isLoading: isArchivedCarsLoadingQ,
+          data: archivedCarsQ
+        } = useFetchCars(isArchivedCarsExpanded);
+    */
+
     console.log("Starting fetch");
     setIsArchivedCarsLoading(true);
 
@@ -72,6 +85,11 @@ export default function CarsDashboardTab() {
       console.log("Fetched cars");
     }, 1000);
   }
+
+  const {
+    isLoading: isArchivedCarsLoadingQ,
+    data: archivedCarsQ
+  } = useFetchCars(isArchivedCarsExpanded);
 
   useEffect(() => {
     if (isArchivedCarsExpanded && !isArchivedCarsFetched) {
@@ -85,75 +103,67 @@ export default function CarsDashboardTab() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Cars Management</h1>
-          <p className="text-base-content/60">Full inventory and car details</p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold">Cars Management</h1>
+        <p className="text-base-content/60">Full inventory and car details</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <StatCardsSection>
         <StatCard label={"Cars in Catalog"} data={mockCars.length} />
         <StatCard label={"Cars with Listings"} data={live.length} />
         <StatCard label={"Cars ready for listings"} data={needsListing.length} />
-      </div>
+      </StatCardsSection>
 
+      <ActionsSection header={"Actions"}>
+        <ButtonWithModal buttonLabel={"Add Car"}>
+          <AddCarForm />
+        </ButtonWithModal>
 
-      <div className="p-4 bg-base-100 border border-base-300 rounded-xl">
-        <h2>Actions</h2>
-        <div className="flex gap-4">
-          <button className="btn" onClick={() => document.getElementById('my_modal_1').showModal()}>Add Car</button>
-          <dialog id="my_modal_1" className="modal">
-            <AddCarForm />
-          </dialog>
+        <ButtonWithModal buttonLabel={"Update Car"}>
+          <UpdateCarForm />
+        </ButtonWithModal>
 
-          <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>Update Car</button>
-          <dialog id="my_modal_2" className="modal">
-            <UpdateCarForm />
-          </dialog>
+        <ButtonWithModal buttonLabel={"Edit Car"}>
+          <EditCarForm />
+        </ButtonWithModal>
+      </ActionsSection>
 
-          <button className="btn" onClick={() => document.getElementById('my_modal_3').showModal()}>Full Car Edit</button>
-          <dialog id="my_modal_3" className="modal">
-            <EditCarForm />
-          </dialog>
-        </div>
-
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <TablesSection>
         <Card label="Need Edit">
           <CarsTable rows={needsEdit} actionLabel="Edit" />
         </Card>
         <Card label="Ready for Listing">
           <CarsTable rows={needsEdit} actionLabel="Edit" />
         </Card>
-      </div>
+      </TablesSection>
 
-      <div className="collapse bg-base-100 collapse-arrow border-base-300 border">
-        <input type="checkbox" onChange={handleAllCarsExpand} />
-        <div className="collapse-title font-semibold">All Cars</div>
+      <ExpandableSection
+        label="Cars in Catalog"
+        onChange={handleAllCarsExpand}
+      >
         <div className="collapse-content text-sm">
-          Pobrac auta dopiero po rozwinieciu
           {isAllCarsLoading && <p>Loading cars...</p>}
 
           {!isAllCarsLoading && isAllCarsFetched && (
             <AllCarsTable rows={needsEdit} actionLabel="Edit" />
           )}
         </div>
-      </div>
+      </ExpandableSection>
 
-      <div className="collapse bg-base-100 collapse-arrow border-base-300 border">
-        <input type="checkbox" onChange={(e) => setIsArchivedCarsExpanded(e.target.checked)} />
-        <div className="collapse-title font-semibold">Archived Cars</div>
+      <ExpandableSection
+        label="Archived Cars"
+        onChange={(e) => setIsArchivedCarsExpanded(e.target.checked)}
+      >
         <div className="collapse-content text-sm">
-          {isArchivedCarsLoading && <p>Loading cars...</p>}
+          {isArchivedCarsLoadingQ && console.log(archivedCarsQ)}
+
+          {/* {isArchivedCarsLoading && <p>Loading cars...</p>}
 
           {isArchivedCarsFetched && (
             <AllCarsTable rows={needsEdit} actionLabel="Edit" />
-          )}
+          )} */}
         </div>
-      </div>
-
+      </ExpandableSection>
     </div >
   );
 }
@@ -168,7 +178,6 @@ function CarsTable({ rows, actionLabel }: { rows: Car[]; actionLabel: string }) 
             <th>Year</th>
             <th>Price</th>
             <th>Mileage</th>
-            <th>Color</th>
             <th>VIN</th>
             <th className="text-right">Action</th>
           </tr>
@@ -180,7 +189,6 @@ function CarsTable({ rows, actionLabel }: { rows: Car[]; actionLabel: string }) 
               <td>{car.year}</td>
               <td>{car.price ? `$${car.price}` : "—"}</td>
               <td>{car.mileage ? `${car.mileage} mi` : "—"}</td>
-              <td>{car.color || "—"}</td>
               <td className="font-mono text-xs">{car.vin}</td>
               <td className="text-right">
                 <button className="btn btn-xs btn-outline">{actionLabel}</button>
