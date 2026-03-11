@@ -1,75 +1,46 @@
-import type { CarTableRowDto } from "../types/CarTableRowDto";
-
-export default function Table({
-  rows,
-  actionLabel,
-}: {
-  rows: CarTableRowDto[];
-  actionLabel: string;
-}) {
-  actionLabel
-  const headers = Object.keys(rows[0]);
-
-  // ["Car", "Year", "Price", "Mileage", "Color", "VIN"];
-  return (
-    <table className="table table-sm">
-      <thead>
-        <tr>
-          {headers.map(header => (
-            <th>{header}</th>
-          ))}
-          <th className="text-right"></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {rows.map((row, index) => (
-          <tr>
-            {headers.map(header => (
-              <td>{row[header].to}</td>
-            ))}
-          </tr>
-        ))}
-
-      </tbody>
-    </table>
-
-
-    // <div className="overflow-x-auto">
-    //   <table className="table table-sm">
-    //     <thead>
-    //       <tr>
-    //         {headers.map(h => (
-    //           <th>{h}</th>
-    //         ))}
-    //         <th className="text-right"></th>
-
-    //       </tr>
-    //     </thead>
-    //     <tbody>
-    //       {rows.map(data => (
-    //         <tr key={data.vin}>
-    //           <td className="font-medium">{data.make} {data.model}</td>
-    //           <td>{data.year}</td>
-    //           <td className="font-mono text-xs">{data.vin}</td>
-    //           <td className="text-right">
-    //             <button className="btn btn-xs">
-    //               {actionLabel}
-    //             </button>
-    //           </td>
-    //         </tr>
-    //       ))}
-    //       {rows.length === 0 && (
-    //         <tr>
-    //           <td colSpan={4} className="text-center text-base-content/50">
-    //             Nothing here
-    //           </td>
-    //         </tr>
-    //       )}
-    //     </tbody>
-    //   </table>
-    // </div>
-  );
+type Props = {
+  data: any;
 }
 
+export const Table = ({ data }: Props) => {
+  return (
+    <table className="table table-zebra table-sm table-pin-rows table-pin-cols">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Car</th>
+          <th>VIN</th>
+          <th>Year</th>
+          <th>Mileage</th>
+          <th>Engine</th>
+          <th>Transmission</th>
+          <th>Power</th>
+          <th>Drive Type</th>
+          <th>Registration Plate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((car, index: number) => (
+          <tr key={car.vin}>
+            <td>{index + 1}</td>
+            <td className="font-medium">{car.make} {car.model}</td>
+            <td className="font-mono text-xs">{car.vin}</td>
+            <td>{car.year}</td>
+            <td>{car.mileageKm?.toString() ? `${car.mileageKm?.toString()} km` : "—"}</td>
+            <td className="font-mono text-xs">1.9 TDI</td>
+            <td className="font-mono text-xs">Automatic</td>
+            <td className="font-mono text-xs">170HP</td>
+            <td className="font-mono text-xs">FWD</td>
+            <td className="font-mono text-xs">{car.registrationPlate}</td>
+          </tr>
+        ))}
+        {data.length === 0 && (
+          <tr>
+            <td colSpan={7} className="text-center text-base-content/50">Nothing here 🎉</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  )
+}
 

@@ -46,7 +46,7 @@ export const Input = ({ label, type = "text", placeholder, value, onChange }: Pr
 }
 
 type PropsZod = {
-  label: string;
+  label?: string;
   error?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 

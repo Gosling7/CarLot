@@ -6,7 +6,7 @@ public interface ICarRepository
 {
     Task<Guid> AddAsync(Domain.Entities.Car car);
     Task<CarDto?> GetByIdAsync(Guid carId);
-    Task<IEnumerable<CarDto>> GetAsync();
+    Task<PaginatedResponse<CarDto>> GetAsync(GetCarsRequest request);
     Task<bool> IsVinAlreadyPresentAsync(string vin);
     Task DeleteAsync(Guid carId);
 }

@@ -55,9 +55,9 @@ public class CarsController : ControllerBase
 
     [HttpGet]
     [Route("")]
-    public async Task<ActionResult<IEnumerable<CarDto>>> GetCars()
+    public async Task<ActionResult<PaginatedResponse<CarDto>>> GetCars([FromQuery]GetCarsRequest request)
     {
-        var cars = await _getCarsUseCase.ExecuteAsync();
+        var cars = await _getCarsUseCase.ExecuteAsync(request);
         return Ok(cars);
     }
 

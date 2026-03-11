@@ -1,17 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
-import Card from "../../components/Card";
-import { ButtonWithModal } from "../../components/ButtonWithModal";
-import StatCard from "../../components/StatCard";
-import { UpdateCarForm } from "../cars/UpdateCarForm";
-import { EditCarForm } from "../cars/EditCarForm";
-import { AddCarForm } from "./AddCarForm";
-import { ActionsSection } from "../../components/ActionsSection";
-import { StatCardsSection } from "../../components/StatCardsSection";
-import { TablesSection } from "../../components/TablesSection";
-import { ExpandableSection } from "../../components/ExpandableSection";
-import { useFetchCars } from "./hooks/useFetchCars";
-import { Table } from "../../components/Table";
-import { InputZod } from "../../components/Input";
+import { useMemo, useState } from "react";
+import StatCard from "../../StatCard";
+import { useFetchCars } from "../../../features/cars/hooks/useFetchCars";
+import { StatCardsSection } from "../../StatCardsSection";
+import { ActionsSection } from "../../ActionsSection";
+import { AddCarForm } from "../../../features/cars/AddCarForm";
+import { ButtonWithModal } from "../../ButtonWithModal";
+import { UpdateCarForm } from "../../../features/cars/UpdateCarForm";
+import { EditCarForm } from "../../../features/cars/EditCarForm";
+import { TablesSection } from "../../TablesSection";
+import Card from "../../Card";
+import { ExpandableSection } from "../../ExpandableSection";
+import { Table } from "../../Table";
+import { InputZod } from "../../Input";
+import { ArchivedCarsSection } from "./ArchivedCarsSection";
 
 interface Car {
   vin: string;
@@ -31,7 +32,7 @@ const mockCars: Car[] = [
   { vin: "WAUZZZ8V4KA000000", make: "Audi", model: "A4", year: 2021, price: 30000, mileage: 10000, color: "White", status: "live" },
 ];
 
-export default function CarsDashboardTabOld() {
+export default function CarsDashboardTab() {
   console.log("CarsDashboardTab rendered");
 
   const [search, setSearch] = useState("");
@@ -59,13 +60,13 @@ export default function CarsDashboardTabOld() {
     }, 1000);
   }
 
-  function handleAllCarsExpand(e: React.ChangeEvent<HTMLInputElement>) {
-    const checked = e.target.checked;
+  // function handleAllCarsExpand(e: React.ChangeEvent<HTMLInputElement>) {
+  //   const checked = e.target.checked;
 
-    if (checked && !isAllCarsFetched) {
-      fetchCars();
-    }
-  }
+  //   if (checked && !isAllCarsFetched) {
+  //     fetchCars();
+  //   }
+  // }
 
   // function fetchArchivedCars() {
   //   /*
@@ -121,7 +122,7 @@ export default function CarsDashboardTabOld() {
       <StatCardsSection>
         <StatCard label={"Cars in Catalog"} data={mockCars.length} />
         <StatCard label={"Cars with Listings"} data={live.length} />
-        <StatCard label={"Cars ready for listings"} data={needsListing.length} />
+        <StatCard label={"Cars ready for Listing"} data={needsListing.length} />
       </StatCardsSection>
 
       <ActionsSection header={"Actions"}>
@@ -146,6 +147,8 @@ export default function CarsDashboardTabOld() {
           <CarsTable rows={needsEdit} actionLabel="Edit" />
         </Card>
       </TablesSection>
+
+      <ArchivedCarsSection />
 
       <ExpandableSection
         label="Cars in Catalog"

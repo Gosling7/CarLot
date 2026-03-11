@@ -14,7 +14,7 @@ internal class AddCarRequestValidator : AbstractValidator<AddCarRequest>
 
         RuleFor(x => x.Vin)
             .MustAsync(BeUnique).WithMessage("Car with the given VIN is already in the catalog.")
-            .Length(5, 10);
+            .Length(0, 20);
     }
 
     private async Task<bool> BeUnique(string vin, CancellationToken cancellationToken)

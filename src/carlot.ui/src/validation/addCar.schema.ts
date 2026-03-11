@@ -1,5 +1,10 @@
 import z from "zod";
-import { AdditionalFuelType, DriveType, FuelType, TransmissionType } from "../types/CarDto";
+import {
+  AdditionalFuelType,
+  DriveType,
+  FuelType,
+  TransmissionType,
+} from "../types/CarDto";
 
 export const AddCarSchema = z.object({
   vin: z.string().min(1, "VIN is required"),
@@ -21,17 +26,7 @@ export const AddCarSchema = z.object({
   registrationPlate: z.string().min(1),
   location: z.string().min(1),
 
-  equipmentCodes: z.array(z.string())
+  equipmentCodes: z.array(z.string()),
 });
-
-// export const VinSchema = z.object({
-//   vin: z
-//     .string()
-//     .min(1, "VIN is required")
-//     .min(17, "VIN must be 17 characters")
-//     .max(17, "VIN must be 17 characters")
-// });
-
-// export type VinFormValues = z.infer<typeof VinSchema>;
 
 export type AddCarFormValues = z.infer<typeof AddCarSchema>;

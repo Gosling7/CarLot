@@ -34,12 +34,42 @@ internal class CarRepository : ICarRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<CarDto>> GetAsync()
+    public async Task<PaginatedResponse<CarDto>> GetAsync(GetCarsRequest request)
     {
-        return await _dbContext.Cars
+        var query = _dbContext.Cars.AsQueryable();
+
+        var search = request.Search;
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var s = search.ToLower();
+
+            query = query.Where(c =>
+                c.VIN.ToLower().Contains(s) ||
+                c.Make.ToLower().Contains(s) ||
+                c.Model.ToLower().Contains(s));
+        }
+
+        var count = query.Count();
+
+        var pageSize = request.PageSize;
+        var page = request.Page;
+        var cars = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Include(c => c.Equipment)
+            .ThenInclude(c => c.Equipment)
             .Select(c => c.ToDto())
             .AsNoTracking()
             .ToListAsync();
+
+        var totalPages = (int)MathF.Ceiling((float)count / pageSize);
+
+        return new PaginatedResponse<CarDto>(
+            Items: cars, 
+            Page: page, 
+            PageSize: pageSize, 
+            TotalPages: totalPages,
+            TotalItemsCount: count);
     }
 
     public async Task<bool> IsVinAlreadyPresentAsync(string vin)

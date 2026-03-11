@@ -11,7 +11,9 @@ export const ExpandableSection = ({ label, onChange, children }: Props) => {
     <div className="collapse bg-base-100 collapse-arrow border-base-300 border">
       <input type="checkbox" onChange={onChange} />
       <div className="collapse-title font-semibold">{label}</div>
-      {children}
+      <div className="collapse-content text-sm">
+        {children}
+      </div>
     </div>
   )
 }

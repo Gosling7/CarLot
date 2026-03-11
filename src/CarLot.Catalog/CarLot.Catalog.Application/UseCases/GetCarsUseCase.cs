@@ -13,9 +13,8 @@ public class GetCarsUseCase
         _carRepository = carRepository;
     }
 
-    public async Task<IEnumerable<CarDto>> ExecuteAsync()
+    public async Task<PaginatedResponse<CarDto>> ExecuteAsync(GetCarsRequest request)
     {
-        var cars = await _carRepository.GetAsync();
-        return cars;
+        return await _carRepository.GetAsync(request);
     }
 }
