@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { ExpandableSection } from "../../ExpandableSection"
-import { Table } from "../../Table"
-import { useFetchCars } from "../../../features/cars/hooks/useFetchCars";
-import { InputZod } from "../../Input";
+import { ExpandableSection } from "../../../components/ExpandableSection"
+import { Table } from "../../../components/Table"
+import { InputZod } from "../../../components/Input";
+import { useDebounce } from "@/hooks";
+import { useFetchCars } from "@/features/dashboard";
 
 export const ArchivedCarsSection = () => {
   console.log("ArchivedCarsSection rendered")
@@ -12,7 +13,7 @@ export const ArchivedCarsSection = () => {
 
   const PAGE_SIZE = 20;
 
-  const debouncedSearch = useDebouncedValue(search, 600);
+  const debouncedSearch = useDebounce(search, 600);
 
   const {
     data,
@@ -20,7 +21,7 @@ export const ArchivedCarsSection = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = useFetchCars(isExpanded, debouncedSearch, PAGE_SIZE);
+  } = useFetchCars({ isExpanded: isExpanded, search: debouncedSearch, pageSize: PAGE_SIZE, queryKey: ["archivedCars", debouncedSearch], statuses: [0, 1] });
 
   const cars = data?.pages.flatMap((page) => page.items) ?? [];
   const totalItems = data?.pages[0]?.totalItemsCount ?? 0;
@@ -36,11 +37,9 @@ export const ArchivedCarsSection = () => {
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {isFetched && (
-        <div className="overflow-x-auto min-h-180 max-h-180 my-4">
-          <Table data={cars} />
-        </div>
-      )}
+      <div className="overflow-x-auto min-h-180 max-h-180 my-4">
+        <Table data={cars} isFetched={isFetched} />
+      </div>
 
       <div className="flex items-center justify-between mx-2 my-2">
         <span>
@@ -58,19 +57,4 @@ export const ArchivedCarsSection = () => {
       </div>
     </ExpandableSection>
   )
-}
-
-function useDebouncedValue<T>(value: T, delay = 400) {
-  const [debounced, setDebounced] = useState(value);
-
-  useEffect(() => {
-    const id = setTimeout(() => {
-      console.log("debounced!")
-      setDebounced(value);
-    }, delay);
-
-    return () => clearTimeout(id);
-  }, [value, delay]);
-
-  return debounced;
 }

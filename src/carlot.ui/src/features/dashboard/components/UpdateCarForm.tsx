@@ -1,6 +1,6 @@
+import { Input } from "@/components/Input";
+import type { Equipment } from "@/types/Types";
 import { useState } from "react";
-import type { Equipment } from "../../types/Types";
-import { Input } from "../../components/Input";
 
 type CarPreview = {
   vin: string;

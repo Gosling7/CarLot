@@ -1,10 +1,10 @@
-import z from "zod";
 import {
   AdditionalFuelType,
   DriveType,
   FuelType,
   TransmissionType,
-} from "../types/CarDto";
+} from "@/types/CarDto";
+import z from "zod";
 
 export const AddCarSchema = z.object({
   vin: z.string().min(1, "VIN is required"),

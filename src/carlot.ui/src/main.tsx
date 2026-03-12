@@ -4,7 +4,7 @@ import './index.css'
 import DashboardPage from "./pages/DashboardPage.tsx"
 import ListingDetailsPage from "./pages/ListingDetailsPage.tsx"
 import HomePage from "./pages/HomePage.tsx"
-import QueryProvider from "./providers/QueryProvider.tsx"
+import QueryProvider from "./lib/QueryProvider.tsx"
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

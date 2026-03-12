@@ -49,6 +49,8 @@ internal class CarRepository : ICarRepository
                 c.Model.ToLower().Contains(s));
         }
 
+        query = query.Where(c => request.Status.Contains(c.Status));
+
         var count = query.Count();
 
         var pageSize = request.PageSize;

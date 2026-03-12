@@ -1,7 +1,7 @@
 import type { UseFormSetError } from "react-hook-form";
 import type { ProblemDetails } from "../types/ProblemDetails";
 import type { AddCarRequest } from "../types/AddCarRequest";
-import type { AddCarFormValues } from "../validation/addCar.schema";
+import type { AddCarFormValues } from "./validation/addCar.schema";
 
 export function setErrorsInForm(
   problem: ProblemDetails,

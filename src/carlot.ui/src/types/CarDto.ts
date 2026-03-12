@@ -28,29 +28,30 @@ export enum FuelType {
   Petrol,
   Diesel,
   Electric,
-  Hybrid
+  Hybrid,
 }
 
 export enum AdditionalFuelType {
   None,
   LPG,
-  CNG
+  CNG,
 }
 
 export enum TransmissionType {
   Manual,
-  Automatic
+  Automatic,
 }
 
 export enum DriveType {
   FWD,
   RWD,
   AWD,
-  FourWD
+  FourWD,
 }
 
 export enum CarStatus {
+  Received,
   Active,
   Inactive,
-  Sold
+  Sold,
 }

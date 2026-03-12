@@ -1,8 +1,8 @@
+import { api } from "@/lib/axios";
+import type { AddCarRequest } from "@/types/AddCarRequest";
+import type { ProblemDetails } from "@/types/ProblemDetails";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../../shared/axios";
-import type { AddCarRequest } from "../../../types/AddCarRequest";
 import type { AxiosError } from "axios";
-import type { ProblemDetails } from "../../../types/ProblemDetails";
 
 export function useCreateCar() {
   const queryClient = useQueryClient();
