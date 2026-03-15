@@ -1,6 +1,7 @@
 // import ListingsDashboardTab from "../features/listings/ListingsDashboardTab";
 // import MainDashboardTab from "../components/MainDashboardTab";
-import CarsDashboardTab from "../components/dashboard/cars/CarsDashboardTab";
+
+import CarsDashboardTab from "@/features/dashboard/components/CarsDashboardTab";
 
 
 export default function DashboardPage() {

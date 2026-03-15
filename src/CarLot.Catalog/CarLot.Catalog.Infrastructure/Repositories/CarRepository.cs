@@ -1,6 +1,7 @@
 ﻿using CarLot.Catalog.Application.DTOs;
 using CarLot.Catalog.Application.Interfaces;
 using CarLot.Catalog.Domain.Entities;
+using CarLot.Catalog.Domain.Enums;
 using CarLot.Catalog.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -67,11 +68,27 @@ internal class CarRepository : ICarRepository
         var totalPages = (int)MathF.Ceiling((float)count / pageSize);
 
         return new PaginatedResponse<CarDto>(
-            Items: cars, 
-            Page: page, 
-            PageSize: pageSize, 
+            Items: cars,
+            Page: page,
+            PageSize: pageSize,
             TotalPages: totalPages,
             TotalItemsCount: count);
+    }
+
+    public async Task<CarStatsDto> GetCarStatsAsync()
+    {
+        var stats = await _dbContext.Cars
+            .GroupBy(_ => true)
+            .Select(g => new CarStatsDto(
+                g.Count(),
+                g.Count(c => c.Status == CarStatus.Received),
+                g.Count(c => c.Status == CarStatus.Preparing))
+            )
+            .FirstOrDefaultAsync();
+
+        stats ??= new CarStatsDto(0, 0, 0);
+
+        return stats;
     }
 
     public async Task<bool> IsVinAlreadyPresentAsync(string vin)

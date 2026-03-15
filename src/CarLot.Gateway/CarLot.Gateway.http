@@ -1,0 +1,6 @@
+@CarLot.Gateway_HostAddress = http://localhost:5007
+
+GET {{CarLot.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

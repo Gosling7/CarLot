@@ -1,4 +1,5 @@
 ﻿using CarLot.Catalog.Application.DTOs;
+using CarLot.Catalog.Application.Queries;
 using CarLot.Catalog.Application.UseCases;
 using CarLot.Catalog.Domain;
 using CarLot.Catalog.Domain.Enums;
@@ -16,17 +17,20 @@ public class CarsController : ControllerBase
     private readonly GetCarUseCase _getCarUseCase;
     private readonly GetCarsUseCase _getCarsUseCase;
     private readonly DeleteCarUseCase _deleteCarUseCase;
+    private readonly GetCarStatsQuery _getCarStatsQuery;
 
     public CarsController(
         AddCarUseCase addCarUseCase,
         GetCarUseCase getCarUseCase,
         GetCarsUseCase getCarsUseCase,
-        DeleteCarUseCase deleteCarUseCase)
+        DeleteCarUseCase deleteCarUseCase,
+        GetCarStatsQuery getCarStatsQuery)
     {
         _addCarUseCase = addCarUseCase;
         _getCarUseCase = getCarUseCase;
         _getCarsUseCase = getCarsUseCase;
         _deleteCarUseCase = deleteCarUseCase;
+        _getCarStatsQuery = getCarStatsQuery;
     }
 
     [HttpPost]
@@ -68,6 +72,14 @@ public class CarsController : ControllerBase
     {
         var car = await _getCarUseCase.ExecuteAsync(carId);
         return Ok(car);
+    }
+
+    [HttpGet]
+    [Route("stats")]
+    public async Task<ActionResult<CarStatsDto>> GetCarStats()
+    {
+        var stats  = await _getCarStatsQuery.ExecuteAsync();
+        return Ok(stats);
     }
 
     [HttpDelete]

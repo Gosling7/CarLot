@@ -1,4 +1,5 @@
 ﻿using CarLot.Catalog.Application.DTOs;
+using CarLot.Catalog.Application.Queries;
 using CarLot.Catalog.Application.UseCases;
 using CarLot.Catalog.Application.Validators;
 using FluentValidation;
@@ -20,6 +21,8 @@ public static class DependencyInjection
             .AddScoped<GetCarsUseCase>()
 
             .AddScoped<DeleteCarUseCase>()
+
+            .AddScoped<GetCarStatsQuery>()
 
             .AddScoped<GetEquipmentUseCase>();
 
