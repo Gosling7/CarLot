@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import Card from "../../components/Card";
 import StatCard from "../../components/StatCard";
-import { CreateListingForm } from "./CreateListingForm";
-import { EditListingForm } from "./EditListingForm";
+import { CreateListingForm } from "./forms/CreateListingForm";
+import { EditListingForm } from "./forms/EditListingForm";
 
 interface Listing {
   id: string;

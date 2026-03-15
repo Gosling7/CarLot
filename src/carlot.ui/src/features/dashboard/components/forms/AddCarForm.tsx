@@ -1,20 +1,3 @@
-// import { useState } from 'react'
-// import type { Equipment } from "../../types/Types";
-// import { SelectRHF } from "../../components/Select";
-// import { Section } from "../../components/Section";
-// import { InputZod } from "../../components/Input";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { Form } from "../../components/Form";
-// import { useQuery } from "@tanstack/react-query";
-// import axios, { AxiosError } from "axios";
-// import type { AddCarRequest } from "../../types/AddCarRequest";
-// import { AdditionalFuelType, DriveType, FuelType, TransmissionType } from "../../types/CarDto";
-// import { useForm } from "react-hook-form";
-// import { AddCarSchema, type AddCarFormValues } from "../../validation/addCar.schema";
-// import type { ProblemDetails } from "../../types/ProblemDetails";
-// import { setErrorsInForm } from "../../shared/FormUtils";
-// import { useCreateCar } from "../cars/hooks/useCreateCar";
-
 import { setErrorsInForm } from "@/lib/FormUtils";
 import { AddCarSchema, type AddCarFormValues } from "@/lib/validation/addCar.schema";
 import type { AddCarRequest } from "@/types/AddCarRequest";
@@ -23,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
-import { useCreateCar } from "../hooks/useCreateCar";
 import type { ProblemDetails } from "@/types/ProblemDetails";
 import { Section } from "@/components/Section";
 import { InputZod } from "@/components/Input";
@@ -31,6 +13,7 @@ import { SelectRHF } from "@/components/Select";
 import { AdditionalFuelType, DriveType, FuelType, TransmissionType } from "@/types/CarDto";
 import { useState } from "react";
 import { Form } from "@/components/Form";
+import { useCreateCar } from "../../hooks/useCreateCar";
 
 const initialAddCarRequest: AddCarRequest = {
   vin: "",

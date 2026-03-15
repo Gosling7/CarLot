@@ -1,11 +1,11 @@
 import { type ReactNode, useRef } from "react";
 
 type Props = {
-  buttonLabel: string;
+  label: string;
   children: ReactNode;
-};
+}
 
-export const ButtonWithModal = ({ buttonLabel, children }: Props) => {
+export const DashboardActionButton = ({ label, children }: Props) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   function openModal() {
@@ -14,8 +14,8 @@ export const ButtonWithModal = ({ buttonLabel, children }: Props) => {
 
   return (
     <>
-      <button className="btn" onClick={openModal}>
-        {buttonLabel}
+      <button className="btn rounded-xl" onClick={openModal}>
+        {label}
       </button>
 
       <dialog ref={dialogRef} className="modal">

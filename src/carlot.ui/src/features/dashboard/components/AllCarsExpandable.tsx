@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react"
-import { ExpandableSection } from "../../../components/ExpandableSection"
-import { Table } from "../../../components/Table"
-import { InputZod } from "../../../components/Input";
+import { ExpandableSection } from "@/components/ExpandableSection"
+import { InputZod } from "@/components/Input"
+import { Table } from "@/components/Table"
 import { useDebounce } from "@/hooks";
-import { useFetchCars } from "@/features/dashboard";
+import { useState } from "react";
+import { useFetchCars } from "../hooks/useFetchCars";
 
-export const ArchivedCarsSection = () => {
-  console.log("ArchivedCarsSection rendered")
-
+export const AllCarsExpandable = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -28,7 +26,7 @@ export const ArchivedCarsSection = () => {
 
   return (
     <ExpandableSection
-      label="Archived Cars"
+      label="All Cars"
       onChange={(e) => setIsExpanded(e.target.checked)}
     >
       <InputZod
