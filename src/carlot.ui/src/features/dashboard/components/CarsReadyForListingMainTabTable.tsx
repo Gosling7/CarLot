@@ -1,7 +1,8 @@
 import Card from "@/components/Card"
 import { useFetchCars } from "../hooks/useFetchCars";
 
-export const TableCarsReadyForListing = () => {
+// TODO: Mockup component, to be implemented correctly
+export const CarsReadyForListingMainTabTable = () => {
   const {
     data: needListingCars,
     isFetched: isNeedListingCarsFetched,
@@ -29,9 +30,6 @@ function CarsTable({ rows, actionLabel }: { rows: Car[]; actionLabel: string }) 
         <thead>
           <tr>
             <th>Car</th>
-            <th>Year</th>
-            <th>Price</th>
-            <th>Mileage</th>
             <th>VIN</th>
             <th className="text-right">Action</th>
           </tr>
@@ -40,9 +38,6 @@ function CarsTable({ rows, actionLabel }: { rows: Car[]; actionLabel: string }) 
           {rows.map(car => (
             <tr key={car.vin}>
               <td className="font-medium">{car.make} {car.model}</td>
-              <td>{car.year}</td>
-              <td>{car.price ? `$${car.price}` : "—"}</td>
-              <td>{car.mileage ? `${car.mileage} mi` : "—"}</td>
               <td className="font-mono text-xs">{car.vin}</td>
               <td className="text-right">
                 <button className="btn btn-xs btn-outline">{actionLabel}</button>

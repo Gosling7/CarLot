@@ -1,38 +1,34 @@
 import Card from "@/components/Card"
-import { useFetchCars } from "../hooks/useFetchCars";
 
-export const TableCarsNeedEdit = () => {
+const mockCars: Car[] = [
+  { vin: "5N1AT2MK4FC824170", make: "Audi", model: "A3", status: "needs-listing" },
+  { vin: "1HGCM82633A004352", make: "Toyota", model: "Camry", status: "needs-edit" },
+  { vin: "JHMFA16586S000000", make: "Honda", model: "Civic", status: "draft" },
+  { vin: "WAUZZZ8V4KA000000", make: "Audi", model: "A4", status: "live" },
+];
 
-  const {
-    data: needEditCars,
-    isFetched: isNeedEditCarsFetched,
-  } = useFetchCars({
-    isExpanded: true,
-    pageSize: 20,
-    statuses: [1],
-    search: "",
-    queryKey: ["needEditCars"]
-  })
+// TODO: Mockup component, to be implemented correctly
+export const DraftListingsMainTabTable = () => {
+
+  const drafts = mockCars.filter(c => c.status === "draft");
 
   return (
-    <Card label="Need Edit">
-      {isNeedEditCarsFetched && (
-        <CarsTable rows={needEditCars?.pages[0].items} actionLabel="Edit" />
-      )}
+    <Card label="Draft Listings">
+      <Table
+        rows={drafts}
+        actionLabel="Edit"
+      />
     </Card>
   )
 }
 
-function CarsTable({ rows, actionLabel }: { rows: Car[]; actionLabel: string }) {
+function Table({ rows, actionLabel }: { rows: Car[]; actionLabel: string }) {
   return (
     <div className="overflow-x-auto">
       <table className="table table-sm">
         <thead>
           <tr>
             <th>Car</th>
-            <th>Year</th>
-            <th>Price</th>
-            <th>Mileage</th>
             <th>VIN</th>
             <th className="text-right">Action</th>
           </tr>
@@ -41,9 +37,6 @@ function CarsTable({ rows, actionLabel }: { rows: Car[]; actionLabel: string }) 
           {rows.map(car => (
             <tr key={car.vin}>
               <td className="font-medium">{car.make} {car.model}</td>
-              <td>{car.year}</td>
-              <td>{car.price ? `$${car.price}` : "—"}</td>
-              <td>{car.mileage ? `${car.mileage} mi` : "—"}</td>
               <td className="font-mono text-xs">{car.vin}</td>
               <td className="text-right">
                 <button className="btn btn-xs btn-outline">{actionLabel}</button>

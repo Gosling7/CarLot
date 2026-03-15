@@ -6,8 +6,8 @@ import { DashboardActionsSection } from "@/features/dashboard/components/Dashboa
 import { DashboardActionButton } from "@/features/dashboard/components/DashboardActionButton";
 import { UpdateCarForm } from "./forms/UpdateCarForm";
 import { EditCarForm } from "./forms/EditCarForm";
-import { TableCarsNeedEdit } from "./TableCarsNeedEdit";
-import { TableCarsReadyForListing } from "./TableCarsReadyForListing";
+import { NeedEditCarsTable } from "./NeedEditCarsTable";
+import { ReadyForListingCarsTable } from "./ReadyForListingCarsTable";
 import { AllCarsExpandable } from "./AllCarsExpandable";
 import { AddCarForm } from "./forms/AddCarForm";
 
@@ -38,8 +38,8 @@ export const CarsDashboardTab = () => {
       </DashboardActionsSection>
 
       <DashboardTablesSection>
-        <TableCarsNeedEdit />
-        <TableCarsReadyForListing />
+        <NeedEditCarsTable />
+        <ReadyForListingCarsTable />
       </DashboardTablesSection>
 
       <AllCarsExpandable />

@@ -1,6 +1,7 @@
 // import ListingsDashboardTab from "../features/listings/ListingsDashboardTab";
 // import MainDashboardTab from "../components/MainDashboardTab";
 
+import { MainDashboardTab } from "@/features/dashboard/components/MainDashboardTab";
 import { CarsDashboardTab } from "@/features/dashboard/components/CarsDashboardTab";
 
 
@@ -10,10 +11,10 @@ export default function DashboardPage() {
     <>
       {/* name of each tab group should be unique */}
       <div className="flex justify-center tabs tabs-border">
-        {/* <input type="radio" name="my_tabs_2" className="tab" aria-label="Dashboard" defaultChecked />
+        <input type="radio" name="my_tabs_2" className="tab" aria-label="Dashboard" defaultChecked />
         <div className="tab-content border-base-300 bg-base-200 p-10">
           <MainDashboardTab />
-        </div> */}
+        </div>
 
         <input type="radio" name="my_tabs_2" className="tab" aria-label="Cars" />
         <div className="tab-content border-base-300 bg-base-200 p-10">
