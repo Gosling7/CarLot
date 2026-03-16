@@ -35,6 +35,17 @@ internal class CarRepository : ICarRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<CarDto?> GetByVinAsync(string vin)
+    {
+        return await _dbContext.Cars
+            .Include(c => c.Equipment)
+            .ThenInclude(c => c.Equipment)
+            .Where(c => c.VIN == vin)
+            .Select(c => c.ToDto())
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<PaginatedResponse<CarDto>> GetAsync(GetCarsRequest request)
     {
         var query = _dbContext.Cars.AsQueryable();

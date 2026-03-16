@@ -166,7 +166,7 @@ export const UpdateCarForm = () => {
             />
           </div>
           <button
-            className="btn btn-primary"
+            className="btn rounded-xl"
             type="button"
             onClick={handleSearch}
           >
@@ -211,7 +211,7 @@ export const UpdateCarForm = () => {
               <p className="opacity-60">Equipment</p>
               <div className="flex flex-wrap gap-2 mt-1">
                 {car.equipment.map(code => (
-                  <span key={code} className="badge badge-primary badge-outline">
+                  <span key={code} className="badge badge-outline">
                     {equipmentDummyData.find(e => e.code === code)?.name}
                   </span>
                 ))}
@@ -231,7 +231,7 @@ export const UpdateCarForm = () => {
           <div className="flex flex-wrap gap-4">
             <button
               type="button"
-              className={`btn ${selectedSection === "mileage" ? "btn-primary" : "btn-outline"}`}
+              className={`btn ${selectedSection === "mileage" ? "btn-neutral rounded-xl" : "btn rounded-xl"}`}
               onClick={() => handleSelectSection("mileage")}
             >
               Mileage
@@ -239,7 +239,7 @@ export const UpdateCarForm = () => {
 
             <button
               type="button"
-              className={`btn ${selectedSection === "equipment" ? "btn-primary" : "btn-outline"}`}
+              className={`btn ${selectedSection === "equipment" ? "btn-neutral rounded-xl" : "btn rounded-xl"}`}
               onClick={() => handleSelectSection("equipment")}
             >
               Equipment
@@ -247,7 +247,7 @@ export const UpdateCarForm = () => {
 
             <button
               type="button"
-              className={`btn ${selectedSection === "status" ? "btn-primary" : "btn-outline"}`}
+              className={`btn ${selectedSection === "status" ? "btn-neutral rounded-xl" : "btn rounded-xl"}`}
               onClick={() => handleSelectSection("status")}
             >
               Status
@@ -281,7 +281,7 @@ export const UpdateCarForm = () => {
           />
 
           <button
-            className="btn btn-primary mt-4"
+            className="btn rounded-xl mt-4"
             type="button"
             onClick={saveMileage}
           >
@@ -319,7 +319,7 @@ export const UpdateCarForm = () => {
           </div>
 
           <button
-            className="btn btn-primary mt-4"
+            className="btn rounded-xl mt-4"
             type="button"
             onClick={saveEquipment}
           >
@@ -344,7 +344,7 @@ export const UpdateCarForm = () => {
           </select>
 
           <button
-            className="btn btn-primary mt-4"
+            className="btn rounded-xl mt-4"
             type="button"
             onClick={saveStatus}
           >

@@ -18,19 +18,22 @@ public class CarsController : ControllerBase
     private readonly GetCarsUseCase _getCarsUseCase;
     private readonly DeleteCarUseCase _deleteCarUseCase;
     private readonly GetCarStatsQuery _getCarStatsQuery;
+    private readonly GetCarByVinQuery _getCarByVinQuery;
 
     public CarsController(
         AddCarUseCase addCarUseCase,
         GetCarUseCase getCarUseCase,
         GetCarsUseCase getCarsUseCase,
         DeleteCarUseCase deleteCarUseCase,
-        GetCarStatsQuery getCarStatsQuery)
+        GetCarStatsQuery getCarStatsQuery,
+        GetCarByVinQuery getCarByVinQuery)
     {
         _addCarUseCase = addCarUseCase;
         _getCarUseCase = getCarUseCase;
         _getCarsUseCase = getCarsUseCase;
         _deleteCarUseCase = deleteCarUseCase;
         _getCarStatsQuery = getCarStatsQuery;
+        _getCarByVinQuery = getCarByVinQuery;
     }
 
     [HttpPost]
@@ -61,16 +64,23 @@ public class CarsController : ControllerBase
     [Route("")]
     public async Task<ActionResult<PaginatedResponse<CarDto>>> GetCars([FromQuery] GetCarsRequest request)
     {
-        var statusValues = Request.Query["Status"];
         var cars = await _getCarsUseCase.ExecuteAsync(request);
         return Ok(cars);
     }
 
+    //[HttpGet]
+    //[Route("{carId}")]
+    //public async Task<ActionResult<CarDto>> GetCarById(Guid carId)
+    //{
+    //    var car = await _getCarUseCase.ExecuteAsync(carId);
+    //    return Ok(car);
+    //}
+
     [HttpGet]
-    [Route("{carId}")]
-    public async Task<ActionResult<CarDto>> GetCarById(Guid carId)
+    [Route("{vin}")]
+    public async Task<ActionResult<CarDto>> GetCarByVin(string vin)
     {
-        var car = await _getCarUseCase.ExecuteAsync(carId);
+        var car = await _getCarByVinQuery.ExecuteAsync(vin);
         return Ok(car);
     }
 

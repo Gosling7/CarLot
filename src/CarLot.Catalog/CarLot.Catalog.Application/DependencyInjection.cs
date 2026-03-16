@@ -23,6 +23,7 @@ public static class DependencyInjection
             .AddScoped<DeleteCarUseCase>()
 
             .AddScoped<GetCarStatsQuery>()
+            .AddScoped<GetCarByVinQuery>()
 
             .AddScoped<GetEquipmentUseCase>();
 

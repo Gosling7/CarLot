@@ -1,11 +1,13 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: dark --default;
+}
 
-@layer base {
+/* @layer base {
 
   input,
   select,
   textarea {
     @apply border border-gray-300 rounded-lg px-2 py-1;
   }
-}
+} */
