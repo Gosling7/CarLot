@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Input } from "../../components/Input";
-import Select from "../../components/Select";
+import { Input } from "@/components/Input";
+import Select from "@/components/Select";
+import { useState } from "react";
 
 type Car = {
   vin: string;

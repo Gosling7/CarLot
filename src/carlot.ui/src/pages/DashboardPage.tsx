@@ -1,8 +1,6 @@
-// import ListingsDashboardTab from "../features/listings/ListingsDashboardTab";
-// import MainDashboardTab from "../components/MainDashboardTab";
-
 import { MainDashboardTab } from "@/features/dashboard/components/MainDashboardTab";
 import { CarsDashboardTab } from "@/features/dashboard/components/CarsDashboardTab";
+import { ListingsDashboardTab } from "@/features/dashboard/components/ListingsDashboardTab";
 
 
 export default function DashboardPage() {
@@ -21,10 +19,10 @@ export default function DashboardPage() {
           <CarsDashboardTab />
         </div>
 
-        {/* <input type="radio" name="my_tabs_2" className="tab" aria-label="Listings" />
+        <input type="radio" name="my_tabs_2" className="tab" aria-label="Listings" />
         <div className="tab-content border-base-300 bg-base-200 p-10">
           <ListingsDashboardTab />
-        </div> */}
+        </div>
       </div>
     </>
   )
