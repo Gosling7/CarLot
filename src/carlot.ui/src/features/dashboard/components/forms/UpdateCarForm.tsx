@@ -1,6 +1,14 @@
 import { Input } from "@/components/Input";
+import { api } from "@/lib/axios";
+import { CarStatus } from "@/types/CarDto";
 import type { Equipment } from "@/types/Types";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useFetchCarByVin } from "../../hooks/useFetchCarByVin";
+import { useUpdateMileage } from "../../hooks/useUpdateMileage";
+import { useUpdateStatus } from "../../hooks/useUpdateStatus";
+import Select, { SelectRHF } from "@/components/Select";
+import { useUpdateEquipment } from "../../hooks/useUpdateEquipment";
 
 type CarPreview = {
   vin: string;
@@ -54,7 +62,6 @@ const equipmentDummyData: Equipment[] = [
 ];
 
 export const UpdateCarForm = () => {
-  const [vinSearch, setVinSearch] = useState("");
   const [car, setCar] = useState<CarPreview | null>(null);
 
   const [selectedSection, setSelectedSection] = useState<
@@ -62,31 +69,31 @@ export const UpdateCarForm = () => {
   >(null);
 
   const [mileage, setMileage] = useState<number>(0);
-  const [status, setStatus] = useState("Available");
+  const [status, setStatus] = useState(CarStatus.Received);
   const [equipmentSearch, setEquipmentSearch] = useState("");
   const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const handleSearch = () => {
-    const found = dummyCars.find(c =>
-      c.vin.toLowerCase() === vinSearch.toLowerCase()
-    );
+  // const handleSearch = () => {
+  //   const found = dummyCars.find(c =>
+  //     c.vin.toLowerCase() === vinSearch.toLowerCase()
+  //   );
 
-    if (found) {
-      setCar(found);
-      setMileage(found.mileage);
-      setStatus(found.status);
-      setSelectedCodes(found.equipment);
-      setSelectedSection(null);
-      setSuccessMessage(null);
-    } else {
-      setCar(null);
-      alert("Car not found");
-    }
-  };
+  //   if (found) {
+  //     setCar(found);
+  //     setMileage(found.mileage);
+  //     setStatus(found.status);
+  //     setSelectedCodes(found.equipment);
+  //     setSelectedSection(null);
+  //     setSuccessMessage(null);
+  //   } else {
+  //     setCar(null);
+  //     alert("Car not found");
+  //   }
+  // };
 
   const handleSelectSection = (
-    section: "mileage" | "equipment" | "status"
+    section: "status" | "mileage" | "equipment"
   ) => {
     setSelectedSection(section);
     setSuccessMessage(null);
@@ -113,35 +120,84 @@ export const UpdateCarForm = () => {
      SAVE HANDLERS (Now Update Car)
      ============================== */
 
-  const saveMileage = () => {
-    if (!car) return;
+  // const saveMileage = () => {
+  //   if (!car) return;
 
-    const updatedCar = { ...car, mileage };
-    setCar(updatedCar);
+  //   const updatedCar = { ...car, mileage };
+  //   setCar(updatedCar);
 
-    setSuccessMessage("Mileage successfully updated.");
-    setSelectedSection(null);
-  };
+  //   setSuccessMessage("Mileage successfully updated.");
+  //   setSelectedSection(null);
+  // };
 
-  const saveEquipment = () => {
-    if (!car) return;
+  // const saveEquipment = () => {
+  //   if (!car) return;
 
-    const updatedCar = { ...car, equipment: selectedCodes };
-    setCar(updatedCar);
+  //   const updatedCar = { ...car, equipment: selectedCodes };
+  //   setCar(updatedCar);
 
-    setSuccessMessage("Equipment successfully updated.");
-    setSelectedSection(null);
-  };
+  //   setSuccessMessage("Equipment successfully updated.");
+  //   setSelectedSection(null);
+  // };
 
-  const saveStatus = () => {
-    if (!car) return;
+  // const saveStatus = () => {
+  //   if (!car) return;
 
-    const updatedCar = { ...car, status };
-    setCar(updatedCar);
+  //   const updatedCar = { ...car, status };
+  //   setCar(updatedCar);
 
-    setSuccessMessage("Status successfully updated.");
-    setSelectedSection(null);
-  };
+  //   setSuccessMessage("Status successfully updated.");
+  //   setSelectedSection(null);
+  // };
+
+
+
+  // const {
+  //   data,
+  //   isFetched
+  // } = useQuery({
+  //   queryKey: ["car-by-vin"],
+  //   queryFn: async () => {
+  //     setFetchVin(false);
+  //     return await api.get(`/cars/${vinSearch}`);
+  //   },
+  //   enabled: fetchVin,
+  // })
+
+  const [fetchedVin, setFetchedVin] = useState("");
+  const [vinSearch, setVinSearch] = useState<string>("");
+
+  const { data, isFetched } = useFetchCarByVin({
+    vin: fetchedVin,
+    enabled: fetchedVin !== ""
+  });
+
+  const updateMileageMutation = useUpdateMileage({ vin: fetchedVin, mileage: mileage });
+  const {
+    mutate: mutateStatus,
+    error: statusError,
+    isSuccess: isUpdateStatusSuccess
+  } = useUpdateStatus({ vin: fetchedVin, status: status });
+  const {
+    mutate: mutateEquipment
+  } = useUpdateEquipment({ vin: fetchedVin, equipmentCodes: selectedCodes });
+
+  function saveMileage() {
+    updateMileageMutation.mutate();
+  }
+
+  function saveStatus() {
+    mutateStatus();
+    if (isUpdateStatusSuccess) setSuccessMessage("Status successfully updated.");
+  }
+
+  function saveEquipment() {
+    mutateEquipment();
+  }
+
+  // if (isFetched) {
+  //   setFetchVin(false);
+  // }
 
   return (
     <div className="modal-box max-w-5xl bg-base-200 animate-fadeIn relative">
@@ -168,7 +224,7 @@ export const UpdateCarForm = () => {
           <button
             className="btn rounded-xl"
             type="button"
-            onClick={handleSearch}
+            onClick={() => setFetchedVin(vinSearch)}
           >
             Search
           </button>
@@ -180,39 +236,39 @@ export const UpdateCarForm = () => {
       </div>
 
       {/* CAR PREVIEW */}
-      {car && (
+      {isFetched && data && (
         <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6 animate-fadeIn">
           <h3 className="text-sm font-semibold mb-4">Current Car Info</h3>
 
           <div className="grid md:grid-cols-3 gap-4 text-sm">
             <div>
               <p className="opacity-60">Make / Model</p>
-              <p className="font-medium">{car.make} {car.model}</p>
+              <p className="font-medium">{data.make} {data.model}</p>
             </div>
 
             <div>
               <p className="opacity-60">Year</p>
-              <p className="font-medium">{car.year}</p>
+              <p className="font-medium">{data.year}</p>
             </div>
 
             <div>
               <p className="opacity-60">Mileage</p>
-              <p className="font-medium">{car.mileage.toLocaleString()} km</p>
+              <p className="font-medium">{data.mileageKm.toLocaleString()} km</p>
             </div>
 
             <div>
               <p className="opacity-60">Status</p>
               <span className="badge badge-outline">
-                {car.status}
+                {CarStatus[data.status]}
               </span>
             </div>
 
             <div className="md:col-span-3">
               <p className="opacity-60">Equipment</p>
               <div className="flex flex-wrap gap-2 mt-1">
-                {car.equipment.map(code => (
-                  <span key={code} className="badge badge-outline">
-                    {equipmentDummyData.find(e => e.code === code)?.name}
+                {data.equipment.map(eq => (
+                  <span key={eq.code} className="badge badge-outline">
+                    {equipmentDummyData.find(e => e.code === eq.code)?.name}
                   </span>
                 ))}
               </div>
@@ -222,13 +278,21 @@ export const UpdateCarForm = () => {
       )}
 
       {/* UPDATE OPTIONS */}
-      {car && (
+      {isFetched && data && (
         <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6">
           <h3 className="text-sm font-semibold mb-4">
             What do you want to update?
           </h3>
 
           <div className="flex flex-wrap gap-4">
+            <button
+              type="button"
+              className={`btn ${selectedSection === "status" ? "btn-neutral rounded-xl" : "btn rounded-xl"}`}
+              onClick={() => handleSelectSection("status")}
+            >
+              Status
+            </button>
+
             <button
               type="button"
               className={`btn ${selectedSection === "mileage" ? "btn-neutral rounded-xl" : "btn rounded-xl"}`}
@@ -244,27 +308,45 @@ export const UpdateCarForm = () => {
             >
               Equipment
             </button>
-
-            <button
-              type="button"
-              className={`btn ${selectedSection === "status" ? "btn-neutral rounded-xl" : "btn rounded-xl"}`}
-              onClick={() => handleSelectSection("status")}
-            >
-              Status
-            </button>
           </div>
         </div>
       )}
 
-      {/* SUCCESS MESSAGE */}
-      {successMessage && (
-        <div className="bg-success/10 border border-success rounded-xl p-5 mb-6 animate-fadeIn">
-          <h4 className="font-semibold text-success mb-1">
-            Update Successful
-          </h4>
-          <p className="text-sm opacity-80">
-            {successMessage}
-          </p>
+      {/* STATUS */}
+      {selectedSection === "status" && (
+        <div className="bg-base-100 p-6 rounded-xl shadow-sm animate-fadeIn">
+          <h3 className="text-sm font-semibold mb-4">Update Status</h3>
+
+          <Select
+            label={"Status"}
+            options={CarStatus}
+            onChange={(e) => setStatus(e)}
+            value={status}
+          />
+
+          {/* TODO: temporary error form for now */}
+          {statusError && (
+            <div className="bg-error/10 border border-error rounded-xl p-4 mt-4 text-sm">
+              <p className="font-semibold text-error">
+                {statusError.response?.data.title ?? "An error occurred"}
+              </p>
+              {statusError.response?.data.errors &&
+                Object.values(statusError.response.data.errors)
+                  .flat()
+                  .map((msg, i) => (
+                    <p key={i} className="opacity-80 mt-1">{msg}</p>
+                  ))
+              }
+            </div>
+          )}
+
+          <button
+            className="btn rounded-xl mt-4"
+            type="button"
+            onClick={saveStatus}
+          >
+            Save Status
+          </button>
         </div>
       )}
 
@@ -328,28 +410,15 @@ export const UpdateCarForm = () => {
         </div>
       )}
 
-      {/* STATUS */}
-      {selectedSection === "status" && (
-        <div className="bg-base-100 p-6 rounded-xl shadow-sm animate-fadeIn">
-          <h3 className="text-sm font-semibold mb-4">Update Status</h3>
-
-          <select
-            className="select select-bordered w-full max-w-xs"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="Available">Available</option>
-            <option value="Reserved">Reserved</option>
-            <option value="Archived">Archived</option>
-          </select>
-
-          <button
-            className="btn rounded-xl mt-4"
-            type="button"
-            onClick={saveStatus}
-          >
-            Save Status
-          </button>
+      {/* SUCCESS MESSAGE */}
+      {successMessage && (
+        <div className="bg-success/10 border border-success rounded-xl p-5 mb-6 animate-fadeIn mt-4">
+          <h4 className="font-semibold text-success mb-1">
+            Update Successful
+          </h4>
+          <p className="text-sm opacity-80">
+            {successMessage}
+          </p>
         </div>
       )}
     </div>

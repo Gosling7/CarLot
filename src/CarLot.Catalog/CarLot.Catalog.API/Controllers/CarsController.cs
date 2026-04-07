@@ -14,27 +14,97 @@ public record TestRequest(FuelType FuelType, string Name);
 public class CarsController : ControllerBase
 {
     private readonly AddCarUseCase _addCarUseCase;
-    private readonly GetCarUseCase _getCarUseCase;
-    private readonly GetCarsUseCase _getCarsUseCase;
     private readonly DeleteCarUseCase _deleteCarUseCase;
+
+    private readonly UpdateMileageUseCase _updateMileageUseCase;
+    private readonly UpdateStatusUseCase _updateStatusUseCase;
+    private readonly UpdateEquipmentUseCase _updateEquipmentUseCase;
+
     private readonly GetCarStatsQuery _getCarStatsQuery;
     private readonly GetCarByVinQuery _getCarByVinQuery;
+    private readonly GetCarsQuery _getCarsQuery;
 
     public CarsController(
         AddCarUseCase addCarUseCase,
-        GetCarUseCase getCarUseCase,
-        GetCarsUseCase getCarsUseCase,
         DeleteCarUseCase deleteCarUseCase,
         GetCarStatsQuery getCarStatsQuery,
-        GetCarByVinQuery getCarByVinQuery)
+        GetCarByVinQuery getCarByVinQuery,
+        UpdateMileageUseCase updateMileageUseCase,
+        GetCarsQuery getCarsQuery,
+        UpdateStatusUseCase updateStatusUseCase,
+        UpdateEquipmentUseCase updateEquipmentUseCase)
     {
         _addCarUseCase = addCarUseCase;
-        _getCarUseCase = getCarUseCase;
-        _getCarsUseCase = getCarsUseCase;
         _deleteCarUseCase = deleteCarUseCase;
         _getCarStatsQuery = getCarStatsQuery;
         _getCarByVinQuery = getCarByVinQuery;
+        _updateMileageUseCase = updateMileageUseCase;
+        _getCarsQuery = getCarsQuery;
+        _updateStatusUseCase = updateStatusUseCase;
+        _updateEquipmentUseCase = updateEquipmentUseCase;
     }
+
+    [HttpGet]
+    [Route("")]
+    public async Task<ActionResult<PaginatedResponse<CarDto>>> GetCars(
+        [FromQuery] GetCarsRequest request)
+    {
+        var result = await _getCarsQuery.ExecuteAsync(request);
+        if (!result.IsSuccess)
+        {
+            var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
+            return BadRequest(problemDetails);
+        }
+
+        return Ok(result.Value);
+    }
+
+    [HttpPatch]
+    [Route("{vin}/mileage")]
+    public async Task<ActionResult<CarDto>> UpdateMileageByVin(
+        [FromRoute] string vin, [FromBody] int mileage)
+    {
+        var result = await _updateMileageUseCase.ExecuteAsync(vin, mileage);
+        if (!result.IsSuccess)
+        {
+            var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
+            return BadRequest(problemDetails);
+        }
+
+        return Ok();
+    }
+
+    [HttpPatch]
+    [Route("{vin}/status")]
+    public async Task<ActionResult<CarDto>> UpdateStatusByVin(
+        [FromRoute] string vin, [FromBody] UpdateStatusRequest request)
+    {
+        var result = await _updateStatusUseCase.ExecuteAsync(vin, request);
+        if (!result.IsSuccess)
+        {
+            var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
+            return BadRequest(problemDetails);
+        }
+
+        return Ok();
+    }
+
+    [HttpPatch]
+    [Route("{vin}/equipment")]
+    public async Task<ActionResult<CarDto>> UpdateEquipmentByVin(
+    [FromRoute] string vin, [FromBody] UpdateEquipmentRequest request)
+    {
+        var result = await _updateEquipmentUseCase.ExecuteAsync(vin, request);
+        if (!result.IsSuccess)
+        {
+            var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
+            return BadRequest(problemDetails);
+        }
+
+        return Ok();
+    }
+
+
 
     [HttpPost]
     [Route("enum")]
@@ -58,23 +128,7 @@ public class CarsController : ControllerBase
 
         // TODO: zwracać id stworzonego auta 
         return CreatedAtAction(nameof(AddCar), new { id = result }, null);
-    }
-
-    [HttpGet]
-    [Route("")]
-    public async Task<ActionResult<PaginatedResponse<CarDto>>> GetCars([FromQuery] GetCarsRequest request)
-    {
-        var cars = await _getCarsUseCase.ExecuteAsync(request);
-        return Ok(cars);
-    }
-
-    //[HttpGet]
-    //[Route("{carId}")]
-    //public async Task<ActionResult<CarDto>> GetCarById(Guid carId)
-    //{
-    //    var car = await _getCarUseCase.ExecuteAsync(carId);
-    //    return Ok(car);
-    //}
+    }    
 
     [HttpGet]
     [Route("{vin}")]
@@ -82,13 +136,13 @@ public class CarsController : ControllerBase
     {
         var car = await _getCarByVinQuery.ExecuteAsync(vin);
         return Ok(car);
-    }
+    }    
 
     [HttpGet]
     [Route("stats")]
     public async Task<ActionResult<CarStatsDto>> GetCarStats()
     {
-        var stats  = await _getCarStatsQuery.ExecuteAsync();
+        var stats = await _getCarStatsQuery.ExecuteAsync();
         return Ok(stats);
     }
 
@@ -108,10 +162,10 @@ public class CarsController : ControllerBase
         int statusCode = StatusCodes.Status400BadRequest)
     {
         var errorsDict = errors
-            .GroupBy(error => error.PropertyName)
+            .GroupBy(error => error.Property)
             .ToDictionary(
                 group => group.Key,
-                group => group.Select(error => error.ErrorMessage).ToArray());
+                group => group.Select(error => error.Message).ToArray());
 
         var problemDetails = new ValidationProblemDetails(errorsDict)
         {

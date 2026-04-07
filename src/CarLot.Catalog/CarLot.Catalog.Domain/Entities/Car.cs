@@ -6,7 +6,7 @@ namespace CarLot.Catalog.Domain.Entities;
 
 public class Car
 {
-    private readonly List<Equipment> _equipment = [];
+    private List<Equipment> _equipment = [];
     private readonly List<IDomainEvent> _domainEvents = new();
 
     public Guid Id { get; }
@@ -26,12 +26,16 @@ public class Car
     public int MileageKm { get; private set; }
     public string Location { get; private set; }
     public int Version { get; private set; } = 1;
-    public CarStatus Status { get; private set; } = CarStatus.Received;
+    public CarStatus Status { get; private set; }
     public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
     public DateTime? UpdatedAtUtc { get; private set; }
 
-    public IReadOnlyCollection<Equipment> Equipment => _equipment.AsReadOnly();
+    public List<Equipment> Equipment { get; set; } = [];
+
+    // public IReadOnlyCollection<Equipment> Equipment => _equipment.AsReadOnly();
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+    private Car() { } // for ef core
 
     public Car(
         Guid id,
@@ -68,6 +72,8 @@ public class Car
         DriveType = driveType;
         MileageKm = mileageKm;
         Location = location;
+        Status = CarStatus.Received;
+        CreatedAtUtc = DateTime.UtcNow;
 
         _equipment.AddRange(equipment ?? Enumerable.Empty<Equipment>());
 
@@ -90,40 +96,76 @@ public class Car
         Enums.DriveType driveType,
         int mileageKm,
         string location,
-        IEnumerable<Equipment> equipment)
+        IEnumerable<Equipment> equipment,
+        bool isVinUnique)
     {
-        // TODO: domain errors handling
+        if (!isVinUnique)
+        {
+            return Result<Car>.Failure(
+                [new Error(nameof(VIN), "Car with the given VIN is already in the catalog.")]);
+        }
+
+        // if electric then no transmission
+        // and other checks like that
+        // domain validations
 
         return Result<Car>.Success(new Car(
-            Guid.NewGuid(),
-            vin,
-            make,
-            model,
-            year,
-            fuelType,
-            additionalFuelType,
-            transmission,
-            powerHp,
-            engineDisplacement,
-            turbocharged,
-            body,
-            registrationPlate,
-            driveType,
-            mileageKm,
-            location,
-            equipment));
+            id: Guid.NewGuid(),
+            vin: vin,
+            make: make,
+            model: model,
+            year: year,
+            fuelType: fuelType,
+            additionalFuelType: additionalFuelType,
+            transmission: transmission,
+            powerHp: powerHp,
+            engineDisplacement: engineDisplacement,
+            turbocharged: turbocharged,
+            body: body,
+            registrationPlate: registrationPlate,
+            driveType: driveType,
+            mileageKm: mileageKm,
+            location: location,
+            equipment: equipment));
     }
 
-    public void UpdateMileage(int newMileage)
+    public Result UpdateMileage(int newMileage)
     {
-        if (newMileage < MileageKm)
+        if (newMileage <= MileageKm)
         {
-            throw new InvalidOperationException("Mileage cannot decrease");
+            return Result.Failure(
+                [new Error(nameof(MileageKm), "Mileage cannot decrease or be the same.")]);
         }
 
         MileageKm = newMileage;
         Version++;
 
-        // _domainEvents.Add(new CarUpdatedEvent(Id));
+        return Result.Success();
+    }
+
+    public void UpdateStatus(CarStatus newStatus)
+    {
+        // TODO: check what domain validation is needed here
+
+        /*         
+        Received,
+        NeedUpdate,
+        ReadyForListing,
+        LiveListing,
+        Archived
+
+        Received -> ReadyForListing -> LiveListing -> Archived
+        Received -> NeedUpdate -> ReadyForListing -> LiveListing -> Archived
+        Received -> NeedUpdate -> ReadyForListing -> LiveListing -> Sold
+         */
+
+
+        Status = newStatus;
+        Version++;
+    }
+
+    public void UpdateEquipment(List<Equipment> newEquipment)
+    {
+        Equipment = newEquipment;
     }
 }

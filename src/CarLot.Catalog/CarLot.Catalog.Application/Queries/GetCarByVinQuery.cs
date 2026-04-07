@@ -14,6 +14,6 @@ public class GetCarByVinQuery
 
     public async Task<CarDto> ExecuteAsync(string vin)
     {
-        return await _carRepository.GetByVinAsync(vin);
+        return await _carRepository.GetDtoByVinAsync(vin);
     }
 }

@@ -16,14 +16,22 @@ public static class DependencyInjection
             .AddScoped<AddCarUseCase>()
             .AddScoped<IValidator<AddCarRequest>, AddCarRequestValidator>()
 
-            .AddScoped<GetCarUseCase>()
-
-            .AddScoped<GetCarsUseCase>()
-
             .AddScoped<DeleteCarUseCase>()
 
             .AddScoped<GetCarStatsQuery>()
             .AddScoped<GetCarByVinQuery>()
+
+            .AddScoped<GetCarsQuery>()
+            .AddScoped<IValidator<GetCarsRequest>, GetCarsRequestValidator>()
+
+            .AddScoped<UpdateMileageUseCase>()
+
+            .AddScoped<UpdateStatusUseCase>()
+            .AddScoped<IValidator<UpdateStatusRequest>, UpdateStatusRequestValidator>()
+
+            .AddScoped<UpdateEquipmentUseCase>()
+
+            .AddScoped<UpdateEquipmentUseCase>()
 
             .AddScoped<GetEquipmentUseCase>();
 

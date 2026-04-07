@@ -1,6 +1,13 @@
 import Card from "@/components/Card"
 import { useFetchCars } from "../hooks/useFetchCars";
 
+const mockCars: Car[] = [
+  { vin: "5N1AT2MK4FC824170", make: "Audi", model: "A3", status: "needs-listing" },
+  { vin: "1HGCM82633A004352", make: "Toyota", model: "Camry", status: "needs-edit" },
+  { vin: "JHMFA16586S000000", make: "Honda", model: "Civic", status: "draft" },
+  { vin: "WAUZZZ8V4KA000000", make: "Audi", model: "A4", status: "live" },
+];
+
 // TODO: Mockup component, to be implemented correctly
 export const CarsReadyForListingMainTabTable = () => {
   const {
@@ -17,7 +24,8 @@ export const CarsReadyForListingMainTabTable = () => {
   return (
     <Card label="Ready for Listing">
       {isNeedListingCarsFetched && (
-        <CarsTable rows={needListingCars?.pages[0].items} actionLabel="Edit" />
+        // <CarsTable rows={needListingCars?.pages[0].value.items} actionLabel="Edit" />
+        <CarsTable rows={mockCars} actionLabel="Edit" />
       )}
     </Card>
   );

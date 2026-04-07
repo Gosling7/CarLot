@@ -24,13 +24,6 @@ public class AddCarUseCase
 
     public async Task<Result> ExecuteAsync(AddCarRequest request)
     {
-        // Walidacja z Fluenta
-
-        //var doesCarExist = await _carRepository.IsVinAlreadyPresentAsync(request.Vin);
-        //if (doesCarExist)
-        //{
-        //    throw new NotImplementedException();
-        //}
         var errors = new List<Error>();
 
         var validationResult = await _validator.ValidateAsync(request);
@@ -45,6 +38,14 @@ public class AddCarUseCase
         }
 
         var equipment = await _equipmentRepository.GetByCodesAsync(request.EquipmentCodes);
+        // TODO: what if sent equipment codes were tampered with?
+        if (!equipment.Any())
+        {
+            errors.Add(new Error(nameof(request.EquipmentCodes), "No equipment with given codes."));
+            return Result.Failure(errors);
+        }
+
+        var isVinUnique = await _carRepository.IsVinAlreadyPresentAsync(request.Vin);
 
         var result = Car.Create(
             request.Vin,
@@ -62,18 +63,17 @@ public class AddCarUseCase
             request.DriveType,
             request.MileageKm,
             request.Location,
-            equipment
-        );
+            equipment,
+            isVinUnique);
 
         if (!result.IsSuccess)
         {
-            // TODO: handle error
+            return result;
         }
 
         var car = result.Value!;
         await _carRepository.AddAsync(car);
 
-        // return car.Id;
         return Result<Guid>.Success(car.Id);
     }
 }

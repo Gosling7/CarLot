@@ -4,5 +4,5 @@ public record PaginatedResponse<T>(
     int Page,
     int PageSize,
     int TotalPages,
-    int TotalItemsCount,
+    int TotalItems,
     List<T> Items);

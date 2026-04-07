@@ -32,4 +32,5 @@ public class Result<T> : Result
     }
 
     public static Result<T> Success(T value) => new(value);
+    public static Result<T> Failure(IEnumerable<Error> errors) => new(errors.ToList());
 }

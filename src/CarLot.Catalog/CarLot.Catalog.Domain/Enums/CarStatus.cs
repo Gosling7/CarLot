@@ -2,9 +2,9 @@
 
 public enum CarStatus
 {
-    Received,
-    Preparing,
-    Available,
-    Reserved,
-    Sold
+    Received = 0,
+    NeedUpdate = 1,
+    ReadyForListing = 2,
+    LiveListing = 3,
+    Archived = 4
 }

@@ -1,12 +1,12 @@
-﻿using CarLot.Catalog.Infrastructure.DataAccessObjects;
+﻿using CarLot.Catalog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarLot.Catalog.Infrastructure.Configurations;
 
-internal class CarConfiguration : IEntityTypeConfiguration<CarDao>
+internal class CarConfiguration : IEntityTypeConfiguration<Car>
 {
-    public void Configure(EntityTypeBuilder<CarDao> builder)
+    public void Configure(EntityTypeBuilder<Car> builder)
     {
         builder.ToTable("Cars")
             .HasKey(c => c.Id);
@@ -49,12 +49,12 @@ internal class CarConfiguration : IEntityTypeConfiguration<CarDao>
         builder.Property(c => c.MileageKm)
             .IsRequired();
 
-        builder.Property(c => c.PowerHP)
+        builder.Property(c => c.PowerHp)
             .IsRequired();
 
         builder.Property(c => c.Status)
             .IsRequired();
-        
+
         builder.Property(c => c.CreatedAtUtc)
             .IsRequired();
 
@@ -65,8 +65,10 @@ internal class CarConfiguration : IEntityTypeConfiguration<CarDao>
             .IsConcurrencyToken();
 
         builder.HasMany(c => c.Equipment)
-            .WithOne(ce => ce.Car)
-            .HasForeignKey(ce => ce.CarId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(ce => ce.Car);
+
+
+            //.HasForeignKey(ce => ce.CarId)
+            //.OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -3,12 +3,12 @@
 // TODO: do oddzielnego projektu class library
 public class Error
 {
-    public string PropertyName { get; }
-    public string ErrorMessage { get; }
+    public string Property { get; }
+    public string Message { get; }
 
-    public Error(string propertyName, string errorMessage)
+    public Error(string property, string message)
     {
-        PropertyName = propertyName;
-        ErrorMessage = errorMessage;
+        Property = property;
+        Message = message;
     }
 }

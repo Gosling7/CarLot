@@ -7,7 +7,7 @@ type Props = {
   onChange: (value: number) => void;
 }
 
-export const Select = ({ label, options, onChange }: Props) => {
+export const Select = ({ label, options, value, onChange }: Props) => {
   const enumNumberValues = getEnumNumberValues(options);
 
   return (
@@ -16,6 +16,7 @@ export const Select = ({ label, options, onChange }: Props) => {
       <select
         className="select select-sm rounded-lg w-full"
         onChange={(e) => onChange(Number(e.target.value))}
+        value={value}
       >
         {enumNumberValues.map(intValue => (
           <option key={intValue} value={intValue}>

@@ -15,16 +15,15 @@ internal class EquipmentRepository : IEquipmentRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Equipment>> GetByCodesAsync(IEnumerable<string> equipmentCodes)
+    public async Task<List<EquipmentDto>> GetAllAsync()
+    {
+        return await _dbContext.Equipment.Select(e => e.ToDto()).ToListAsync();
+    }
+
+    public async Task<List<Equipment>> GetByCodesAsync(IEnumerable<string> equipmentCodes)
     {
         return await _dbContext.Equipment
             .Where(e => equipmentCodes.Contains(e.Code))
-            .Select(e => e.AsEntity())
             .ToListAsync();
-    }
-
-    public async Task<IEnumerable<EquipmentDto>> GetAllAsync()
-    {
-        return await _dbContext.Equipment.Select(e => e.ToDto()).ToListAsync();
     }
 }

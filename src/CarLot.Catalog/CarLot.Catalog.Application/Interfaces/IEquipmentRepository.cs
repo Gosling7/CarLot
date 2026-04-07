@@ -5,6 +5,6 @@ namespace CarLot.Catalog.Application.Interfaces;
 
 public interface IEquipmentRepository
 {
-    Task<IEnumerable<EquipmentDto>> GetAllAsync();
-    Task<IEnumerable<Equipment>> GetByCodesAsync(IEnumerable<string> equipmentCodes);
+    Task<List<EquipmentDto>> GetAllAsync();
+    Task<List<Equipment>> GetByCodesAsync(IEnumerable<string> equipmentCodes);
 }
