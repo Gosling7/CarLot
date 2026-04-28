@@ -1,36 +1,14 @@
 import type { ChangeEventHandler, HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
 
-interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+type InputProps = {
   label?: string;
-}
-
-export function InputOld({ label, ...props }: InputProps) {
-  return (
-    <div>
-      {label && (
-        <label className="block text-gray-600 font-medium mb-1">
-          {label}
-        </label>
-      )}
-
-      <input
-        {...props}
-        className="w-full border rounded-lg focus:outline-none focus:ring-2"
-      />
-    </div>
-  );
-}
-
-type Props = {
-  label: string;
   type?: HTMLInputTypeAttribute;
   placeholder?: string;
   value: string | number;
   onChange: ChangeEventHandler<HTMLInputElement, HTMLInputElement>;
 }
 
-export const Input = ({ label, type = "text", placeholder, value, onChange }: Props) => {
+export const Input = ({ label, type = "text", placeholder, value, onChange }: InputProps) => {
   return (
     <fieldset className="fieldset mx-2">
       <legend className="fieldset-legend">{label}</legend>
@@ -45,12 +23,12 @@ export const Input = ({ label, type = "text", placeholder, value, onChange }: Pr
   )
 }
 
-type PropsZod = {
+type InputZodProps = {
   label?: string;
   error?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-export const InputZod = ({ label, error, ...inputProps }: PropsZod) => {
+export const InputZod = ({ label, error, ...inputProps }: InputZodProps) => {
   return (
     <fieldset className="fieldset mx-2">
       <legend className="fieldset-legend">{label}</legend>

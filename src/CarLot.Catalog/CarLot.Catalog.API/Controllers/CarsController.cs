@@ -15,6 +15,7 @@ public class CarsController : ControllerBase
 {
     private readonly AddCarUseCase _addCarUseCase;
     private readonly DeleteCarUseCase _deleteCarUseCase;
+    private readonly EditCarUseCase _editCarUseCase;
 
     private readonly UpdateMileageUseCase _updateMileageUseCase;
     private readonly UpdateStatusUseCase _updateStatusUseCase;
@@ -32,7 +33,8 @@ public class CarsController : ControllerBase
         UpdateMileageUseCase updateMileageUseCase,
         GetCarsQuery getCarsQuery,
         UpdateStatusUseCase updateStatusUseCase,
-        UpdateEquipmentUseCase updateEquipmentUseCase)
+        UpdateEquipmentUseCase updateEquipmentUseCase,
+        EditCarUseCase editCarUseCase)
     {
         _addCarUseCase = addCarUseCase;
         _deleteCarUseCase = deleteCarUseCase;
@@ -42,6 +44,7 @@ public class CarsController : ControllerBase
         _getCarsQuery = getCarsQuery;
         _updateStatusUseCase = updateStatusUseCase;
         _updateEquipmentUseCase = updateEquipmentUseCase;
+        _editCarUseCase = editCarUseCase;
     }
 
     [HttpGet]
@@ -92,7 +95,7 @@ public class CarsController : ControllerBase
     [HttpPatch]
     [Route("{vin}/equipment")]
     public async Task<ActionResult<CarDto>> UpdateEquipmentByVin(
-    [FromRoute] string vin, [FromBody] UpdateEquipmentRequest request)
+    [   FromRoute] string vin, [FromBody] UpdateEquipmentRequest request)
     {
         var result = await _updateEquipmentUseCase.ExecuteAsync(vin, request);
         if (!result.IsSuccess)
@@ -104,13 +107,17 @@ public class CarsController : ControllerBase
         return Ok();
     }
 
-
-
-    [HttpPost]
-    [Route("enum")]
-    public async Task<IActionResult> AddEnum([FromBody] TestRequest request)
+    [HttpPatch]
+    [Route("{vin}/edit")]
+    public async Task<ActionResult<CarDto>> EditCarByVin([FromRoute] string vin, 
+        [FromBody] EditCarRequest request)
     {
-        Console.WriteLine(request);
+        var result = await _editCarUseCase.ExecuteAsync(vin, request);
+        if (!result.IsSuccess)
+        {
+            var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
+            return BadRequest(problemDetails);
+        }
 
         return Ok();
     }
@@ -128,7 +135,7 @@ public class CarsController : ControllerBase
 
         // TODO: zwracać id stworzonego auta 
         return CreatedAtAction(nameof(AddCar), new { id = result }, null);
-    }    
+    }
 
     [HttpGet]
     [Route("{vin}")]
@@ -136,7 +143,7 @@ public class CarsController : ControllerBase
     {
         var car = await _getCarByVinQuery.ExecuteAsync(vin);
         return Ok(car);
-    }    
+    }
 
     [HttpGet]
     [Route("stats")]

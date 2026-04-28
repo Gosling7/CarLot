@@ -1,15 +1,17 @@
 import { api } from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-type UseUpdateEquipmentOptions = {
+type UseUpdateEquipmentProps = {
   vin: string;
   equipmentCodes: string[];
+  onSuccess: () => void;
 };
 
 export function useUpdateEquipment({
   vin,
   equipmentCodes,
-}: UseUpdateEquipmentOptions) {
+  onSuccess,
+}: UseUpdateEquipmentProps) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -21,6 +23,7 @@ export function useUpdateEquipment({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["carByVin", vin] });
+      onSuccess?.();
     },
   });
 }

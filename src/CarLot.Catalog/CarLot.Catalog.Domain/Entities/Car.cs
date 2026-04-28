@@ -32,7 +32,6 @@ public class Car
 
     public List<Equipment> Equipment { get; set; } = [];
 
-    // public IReadOnlyCollection<Equipment> Equipment => _equipment.AsReadOnly();
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     private Car() { } // for ef core
@@ -105,7 +104,7 @@ public class Car
                 [new Error(nameof(VIN), "Car with the given VIN is already in the catalog.")]);
         }
 
-        // if electric then no transmission
+        // TODO: if electric then no transmission
         // and other checks like that
         // domain validations
 
@@ -167,5 +166,50 @@ public class Car
     public void UpdateEquipment(List<Equipment> newEquipment)
     {
         Equipment = newEquipment;
+    }
+
+    public Result Edit(
+        string make,
+        string model,
+        int year,
+        FuelType fuelType,
+        AdditionalFuelType additionalFuelType,
+        TransmissionType transmission,
+        int powerHp,
+        float? engineDisplacement,
+        bool turbocharged,
+        string body,
+        string registrationPlate,
+        Enums.DriveType driveType,
+        int mileageKm,
+        string location,
+        List<Equipment> equipment)
+    {
+        // TODO: same domain checks as Create e.g. electric + no transmission
+        // You may want to extract those into a private static Validate(...) method
+        // shared between Create and EditCar
+
+        Make = make;
+        Model = model;
+        Year = year;
+        FuelType = fuelType;
+        AdditionalFuelType = additionalFuelType;
+        Transmission = transmission;
+        PowerHp = powerHp;
+        EngineDisplacement = engineDisplacement;
+        Turbocharged = turbocharged;
+        Body = body;
+        RegistrationPlate = registrationPlate;
+        DriveType = driveType;
+        MileageKm = mileageKm;
+        Location = location;
+        Equipment = equipment;
+
+        UpdatedAtUtc = DateTime.UtcNow;
+        Version++;
+
+        // _domainEvents.Add(new CarEditedEvent(id));
+
+        return Result.Success();
     }
 }

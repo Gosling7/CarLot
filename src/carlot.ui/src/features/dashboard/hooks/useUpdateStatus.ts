@@ -5,9 +5,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type UseUpdateStatusOptions = {
   vin: string;
   status: CarStatus;
+  onSuccess: () => void;
 };
 
-export function useUpdateStatus({ vin, status }: UseUpdateStatusOptions) {
+export function useUpdateStatus({
+  vin,
+  status,
+  onSuccess,
+}: UseUpdateStatusOptions) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -17,6 +22,7 @@ export function useUpdateStatus({ vin, status }: UseUpdateStatusOptions) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["carByVin", vin] });
+      onSuccess?.();
     },
   });
 }

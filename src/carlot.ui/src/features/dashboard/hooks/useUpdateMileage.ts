@@ -4,9 +4,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type UseUpdateMileageOptions = {
   vin: string;
   mileage: number;
+  onSuccess: () => void;
 };
 
-export function useUpdateMileage({ vin, mileage }: UseUpdateMileageOptions) {
+export function useUpdateMileage({
+  vin,
+  mileage,
+  onSuccess,
+}: UseUpdateMileageOptions) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,6 +21,7 @@ export function useUpdateMileage({ vin, mileage }: UseUpdateMileageOptions) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["carByVin", vin] });
+      onSuccess?.();
     },
   });
 }

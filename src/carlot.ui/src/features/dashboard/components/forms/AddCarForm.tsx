@@ -1,10 +1,8 @@
 import { setErrorsInForm } from "@/lib/FormUtils";
 import { AddCarSchema, type AddCarFormValues } from "@/lib/validation/addCar.schema";
 import type { AddCarRequest } from "@/types/AddCarRequest";
-import type { Equipment } from "@/types/Types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import type { ProblemDetails } from "@/types/ProblemDetails";
 import { Section } from "@/components/Section";
@@ -14,6 +12,12 @@ import { AdditionalFuelType, DriveType, FuelType, TransmissionType } from "@/typ
 import { useState } from "react";
 import { Form } from "@/components/Form";
 import { useCreateCar } from "../../hooks/useCreateCar";
+import { useFetchEquipment } from "../../hooks/useFetchEquipment";
+import { CarEquipment } from "../CarEquipment";
+import { Button } from "@/components/Button";
+import { CloseModalButton } from "../CloseModalButton";
+import { DashboardModal } from "../DashboardModal";
+import type { EquipmentDto } from "@/types/EquipmentDto";
 
 const initialAddCarRequest: AddCarRequest = {
   vin: "",
@@ -35,23 +39,14 @@ const initialAddCarRequest: AddCarRequest = {
 };
 
 export const AddCarForm = () => {
-  console.log("AddCarForm rendered");
-
   const [equipmentSearch, setEquipmentSearch] = useState("");
 
-  const { data: equipment = [] } = useQuery<Equipment[]>({
-    queryKey: ["equipment"],
-    queryFn: async () => {
-      const response = await axios.get("api/equipment");
-      console.log(response.data);
-      return response.data;
-    }
-  });
+  const { data: equipment = [] } = useFetchEquipment({ enabled: true })
 
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     setValue,
     setError,
     formState: { errors }
@@ -71,17 +66,17 @@ export const AddCarForm = () => {
     });
   };
 
-  const equipmentCodes = watch("equipmentCodes") ?? [];
-  const filteredEquipment = equipment.filter((e) =>
+  const equipmentCodes = getValues("equipmentCodes") ?? [];
+  const filteredEquipment = equipment.filter(e =>
     e.name.toLowerCase().includes(equipmentSearch.toLowerCase())
-  );
+  ) as EquipmentDto[];
   const sortedEquipment = [
     ...filteredEquipment.filter((eq) => equipmentCodes.includes(eq.code)),
     ...filteredEquipment.filter((eq) => !equipmentCodes.includes(eq.code))
   ];
 
   function onToggle(code: string) {
-    const current = watch("equipmentCodes") ?? [];
+    const current = getValues("equipmentCodes") ?? [];
     const updated = current.includes(code)
       ? current.filter(c => c !== code)
       : [...current, code];
@@ -89,12 +84,8 @@ export const AddCarForm = () => {
   }
 
   return (
-    <div className="modal-box max-w-6xl bg-base-200 animate-fadeIn relative overflow-y-auto max-h-[95vh]">
-      <form method="dialog">
-        <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">
-          ✕
-        </button>
-      </form>
+    <DashboardModal>
+      <CloseModalButton />
 
       <Form
         header="Add Car"
@@ -171,29 +162,15 @@ export const AddCarForm = () => {
             value={equipmentSearch}
             onChange={(e) => setEquipmentSearch(e.target.value)}
           />
-          <div className="grid md:grid-cols-2 gap-2 max-h-100 overflow-y-auto mt-4">
-            {sortedEquipment.map((eq) => (
-              <label
-                key={eq.code}
-                className="flex items-center gap-2 px-3 py-1 rounded-lg hover:bg-base-200 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-sm"
-                  checked={equipmentCodes.includes(eq.code)}
-                  onChange={() => onToggle(eq.code)}
-                />
-                <span className="text-sm">{eq.name}</span>
-              </label>
-            ))}
-          </div>
+
+          <CarEquipment
+            equipment={sortedEquipment}
+            onToggle={onToggle}
+          />
         </Section>
 
-        <button className="btn btn-lg mt-6 w-full" type="submit">
-          Save Changes
-        </button>
-
+        <Button label={"Save Changes"} type="submit" />
       </Form >
-    </div>
+    </DashboardModal>
   );
 }

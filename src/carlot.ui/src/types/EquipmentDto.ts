@@ -1,4 +1,4 @@
-export interface EquipmentDto {
+export type EquipmentDto = {
   name: string;
   code: string;
-}
+};
