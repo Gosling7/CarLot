@@ -1,19 +1,19 @@
-﻿using CarLot.Catalog.Domain.Entities;
-using CarLot.Core.Constants;
+﻿using CarLot.Core.Constants;
+using CarLot.Listings.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CarLot.Catalog.Infrastructure.Configurations;
+namespace CarLot.Listings.Infrastructure.Configurations;
 
-internal class CarConfiguration : IEntityTypeConfiguration<Car>
+internal class ListingConfiguration : IEntityTypeConfiguration<Listing>
 {
-    public void Configure(EntityTypeBuilder<Car> builder)
+    public void Configure(EntityTypeBuilder<Listing> builder)
     {
-        builder.ToTable("Cars")
+        builder.ToTable("Listings")
             .HasKey(c => c.Id);
 
         builder.Property(c => c.VIN)
-            .HasMaxLength(CarSchema.VinMaxLength);
+            .HasMaxLength(CarSchema.VinMaxLength); 
         builder.HasIndex(c => c.VIN)
             .IsUnique();
 
@@ -34,11 +34,5 @@ internal class CarConfiguration : IEntityTypeConfiguration<Car>
 
         builder.Property(c => c.Version)
             .IsConcurrencyToken();
-
-        builder.HasMany(c => c.Equipment)
-            .WithMany(ce => ce.Car);
-
-        //.HasForeignKey(ce => ce.CarId)
-        //.OnDelete(DeleteBehavior.Cascade);
     }
 }

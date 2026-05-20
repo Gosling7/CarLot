@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CarLot.Listings.Domain\CarLot.Listings.Domain.csproj" />
-    <ProjectReference Include="..\CarLot.Listings.Infrastructure\CarLot.Listings.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

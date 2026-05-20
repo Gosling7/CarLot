@@ -62,19 +62,31 @@ public class CarsController : ControllerBase
         return Ok(result.Value);
     }
 
+    //[HttpPatch]
+    //[Route("{vin}/mileage")]
+    //public async Task<ActionResult<CarDto>> UpdateMileageByVin(
+    //    [FromRoute] string vin, [FromBody] int mileage)
+    //{
+    //    var result = await _updateMileageUseCase.ExecuteAsync(vin, mileage);
+    //    if (!result.IsSuccess)
+    //    {
+    //        var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
+    //        return BadRequest(problemDetails);
+    //    }
+
+    //    return Ok();
+    //}
+
     [HttpPatch]
     [Route("{vin}/mileage")]
     public async Task<ActionResult<CarDto>> UpdateMileageByVin(
         [FromRoute] string vin, [FromBody] int mileage)
     {
         var result = await _updateMileageUseCase.ExecuteAsync(vin, mileage);
-        if (!result.IsSuccess)
-        {
-            var problemDetails = CreateValidationProblemDetails(HttpContext, result.Errors);
-            return BadRequest(problemDetails);
-        }
 
-        return Ok();
+        return result.IsSuccess 
+            ? Ok()
+            : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
     }
 
     [HttpPatch]
