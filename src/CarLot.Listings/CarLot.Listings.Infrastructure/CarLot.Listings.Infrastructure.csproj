@@ -21,8 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CarLot.Catalog\CarLot.Catalog.Application\CarLot.Catalog.Application.csproj" />
     <ProjectReference Include="..\CarLot.Listings.Application\CarLot.Listings.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -9,10 +9,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.12.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CarLot.Listings.Application\CarLot.Listings.Application.csproj" />
+    <ProjectReference Include="..\CarLot.Listings.Infrastructure\CarLot.Listings.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

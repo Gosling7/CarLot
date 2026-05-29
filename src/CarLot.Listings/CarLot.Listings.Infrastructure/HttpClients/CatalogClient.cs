@@ -1,5 +1,5 @@
-﻿using CarLot.Catalog.Application.DTOs;
-using CarLot.Core;
+﻿using CarLot.Core;
+using CarLot.Listings.Application.DTOs;
 using System.Net;
 using System.Net.Http.Json;
 

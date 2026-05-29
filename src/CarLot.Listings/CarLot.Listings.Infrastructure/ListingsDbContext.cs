@@ -1,4 +1,5 @@
 ﻿using CarLot.Listings.Domain.Entities;
+using CarLot.Listings.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarLot.Listings.Infrastructure;
@@ -6,6 +7,7 @@ namespace CarLot.Listings.Infrastructure;
 internal class ListingsDbContext : DbContext
 {
     public DbSet<Listing> Listings { get; set; }
+    public DbSet<Equipment> Equipments { get; set; }
 
     public ListingsDbContext(DbContextOptions<ListingsDbContext> options)
         : base(options)

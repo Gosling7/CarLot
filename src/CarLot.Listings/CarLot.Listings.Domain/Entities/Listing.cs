@@ -1,4 +1,5 @@
 ﻿using CarLot.Core;
+using CarLot.Listings.Domain.ValueObjects;
 
 namespace CarLot.Listings.Domain.Entities;
 
@@ -25,6 +26,8 @@ public class Listing
     public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
     public DateTime? UpdatedAtUtc { get; private set; }
 
+    public List<Equipment> Equipment { get; set; } = [];
+
     private Listing() { }
 
     private Listing(
@@ -44,7 +47,8 @@ public class Listing
         int mileageKm,
         string location,
         string description,
-        decimal price)
+        decimal price,
+        List<Equipment> equipment)
     {
         Id = id;
         VIN = vin;
@@ -63,6 +67,7 @@ public class Listing
         Location = location;
         Description = description;
         Price = price;
+        Equipment = equipment;
     }
 
     public static Result<Listing> Create(
@@ -81,7 +86,8 @@ public class Listing
         string location,
         string registrationPlate,
         bool turbocharged,
-        decimal price)
+        decimal price,
+        List<Equipment> equipment)
     {
         return Result<Listing>.Success(new(
             id: Guid.NewGuid(),
@@ -100,6 +106,7 @@ public class Listing
             location: location,
             registrationPlate: registrationPlate,
             turbocharged: turbocharged,
-            price: price));
+            price: price,
+            equipment: equipment));
     }
 }
