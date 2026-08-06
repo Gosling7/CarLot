@@ -1,4 +1,5 @@
-﻿using CarLot.Listings.Application.UseCases;
+﻿using CarLot.Listings.Application.Queries;
+using CarLot.Listings.Application.UseCases;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,8 +9,14 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<AddListingUseCase>();
-        
+        services
+            .AddScoped<GetListingByVinQuery>()
+
+            .AddScoped<AddListingUseCase>()
+            .AddScoped<UpdateListingDescriptionUseCase>()
+            .AddScoped<UpdateListingPriceUseCase>()
+            .AddScoped<UpdateListingStatusUseCase>();
+
         return services;
     }
 }

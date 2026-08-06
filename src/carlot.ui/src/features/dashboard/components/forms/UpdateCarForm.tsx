@@ -133,12 +133,12 @@ export const UpdateCarForm = () => {
 
   return (
     <DashboardModal>
-      <div className="grid grid-cols-1 gap-6">
-        <CloseModalButton />
+      <CloseModalButton />
 
+      <div className="grid grid-cols-1 gap-6">
         <h2 className="text-2xl font-bold">Update Car</h2>
 
-        <Section header="Find Car by VIN">
+        <Section header="Find in Catalog">
           <div className="flex gap-4 items-end">
             <div className="w-full">
               <Input

@@ -166,6 +166,7 @@ public class Car
     public void UpdateEquipment(List<Equipment> newEquipment)
     {
         Equipment = newEquipment;
+        Version++;
     }
 
     public Result Edit(

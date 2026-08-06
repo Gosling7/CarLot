@@ -88,9 +88,9 @@ internal class CarRepository : ICarRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<bool> IsVinAlreadyPresentAsync(string vin)
+    public async Task<bool> IsVinUniqueAsync(string vin)
     {
-        return await _dbContext.Cars.AnyAsync(c => c.VIN == vin);
+        return await _dbContext.Cars.AnyAsync(c => c.VIN != vin);
     }
 
     public Task DeleteAsync(Guid carId)

@@ -1,6 +1,19 @@
-import { Input } from "@/components/Input";
-import Select from "@/components/Select";
+import { Input, InputZod } from "@/components/Input";
+import Select, { SelectRHF } from "@/components/Select";
 import { useState } from "react";
+import { DashboardModal } from "../DashboardModal";
+import { CloseModalButton } from "../CloseModalButton";
+import { Section } from "@/components/Section";
+import { Button } from "@/components/Button";
+import { CarStatus } from "@/types/CarDto";
+import { useFetchCarByVin } from "../../hooks/useFetchCarByVin";
+import { useUpdateListing } from "../../hooks/useUpdateListing";
+import { Form } from "@/components/Form";
+import { useForm } from "react-hook-form";
+import { UpdateListingSchema, type UpdateListingForm } from "@/lib/validation/updateListing.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { UpdateListingRequest } from "@/types/requests/UpdateListingRequest";
+import { ListingStatus } from "@/types/enums/ListingStatus";
 
 
 type Car = {
@@ -61,6 +74,19 @@ const dummyListings: Listing[] = [
   }
 ];
 
+// TODO: move somewhere, same in useUpdateListing
+// type UpdateListingRequest = {
+//   description: string;
+//   price: number;
+//   status: string;
+// };
+
+const defaultUpdateListingRequest: UpdateListingRequest = {
+  price: 0,
+  description: "",
+  status: ListingStatus.Draft
+}
+
 export const EditListingForm = () => {
   const [vinSearch, setVinSearch] = useState("");
   const [listing, setListing] = useState<Listing | null>(null);
@@ -68,6 +94,30 @@ export const EditListingForm = () => {
   const [vinNotFound, setVinNotFound] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [fetchedVin, setFetchedVin] = useState("");
+
+  const { data: car } = useFetchCarByVin({
+    vin: fetchedVin,
+    enabled: fetchedVin !== ""
+  });
+
+  const updateListing = useUpdateListing({
+    vin: car?.vin,
+    onSuccess: () => setSuccessMessage("Listing successfully updated.")
+  });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    formState: { errors: updateListingErrors }
+  } = useForm<UpdateListingForm>({
+    resolver: zodResolver(UpdateListingSchema),
+    defaultValues: defaultUpdateListingRequest,
+    mode: "onBlur"
+  });
 
   const handleSearch = () => {
     const foundListing = dummyListings.find(l => l.vin.toLowerCase() === vinSearch.toLowerCase());
@@ -97,113 +147,301 @@ export const EditListingForm = () => {
   };
 
   return (
-    <div className="modal-box max-w-4xl bg-base-200 animate-fadeIn relative max-h-[95vh] overflow-y-auto">
-      <form method="dialog">
-        <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">
-          ✕
-        </button>
-      </form>
+    <DashboardModal>
+      <CloseModalButton />
+      <div className="grid grid-cols-1 gap-6">
+        <h2 className="text-2xl font-bold">Edit Listing</h2>
 
-      <h2 className="text-2xl font-bold mb-6">Edit Listing</h2>
-
-      {/* VIN Search */}
-      <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6">
-        <h3 className="text-sm font-semibold mb-3">Find Listing by VIN</h3>
-        <div className="flex gap-4 items-end">
-          <div className="flex-1">
-            <Input
-              label="VIN"
-              value={vinSearch}
-              onChange={(e) => setVinSearch(e.target.value)}
-            />
-            {vinNotFound && (
-              <p className="text-error text-xs mt-1">No listing found for a car with this VIN</p>
-            )}
-          </div>
-          <button className="btn btn-primary" type="button" onClick={handleSearch}>
-            Search
-          </button>
-        </div>
-      </div>
-
-      {/* Car Snapshot */}
-      {selectedCar && (
-        <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6 animate-fadeIn">
-          <h3 className="text-sm font-semibold mb-4">Car Snapshot</h3>
-          <div className="grid md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <p className="opacity-60">Make / Model</p>
-              <p className="font-medium">{selectedCar.make} {selectedCar.model}</p>
-            </div>
-            <div>
-              <p className="opacity-60">Year</p>
-              <p className="font-medium">{selectedCar.year}</p>
-            </div>
-            <div>
-              <p className="opacity-60">Mileage</p>
-              <p className="font-medium">{selectedCar.mileage.toLocaleString()} km</p>
-            </div>
-            <div>
-              <p className="opacity-60">Body Type</p>
-              <p className="font-medium">{selectedCar.body}</p>
-            </div>
-            <div className="md:col-span-3">
-              <p className="opacity-60">Equipment</p>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {selectedCar.equipment.map((code) => (
-                  <span key={code} className="badge badge-primary badge-outline">{code}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Listing Form */}
-      {listing && (
-        <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6">
-          <h3 className="font-semibold mb-4">Listing Details</h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            <Input
-              label="Price"
-              type="number"
-              value={listing.price}
-              onChange={(e) => handleChange("price", Number(e.target.value))}
-            />
-            <Select
-              label="Status"
-              options={["Active", "Draft", "Archived"]}
-              value={listing.status}
-              onChange={(val) => handleChange("status", val as Listing["status"])}
-            />
-            <div className="md:col-span-2">
-              <label className="label">
-                <span className="label-text">Description</span>
-              </label>
-              <textarea
-                className="textarea textarea-bordered w-full"
-                rows={4}
-                value={listing.description}
-                onChange={(e) => handleChange("description", e.target.value)}
+        <Section header="Find Listing">
+          <div className="flex gap-4 items-end">
+            <div className="w-full">
+              <Input
+                label="VIN"
+                value={vinSearch}
+                onChange={(e) => setVinSearch(e.target.value)}
               />
             </div>
-          </div>
-          <button
-            className="btn btn-lg btn-primary mt-4 w-full"
-            type="button"
-            onClick={handleSave}
-          >
-            Save Changes
-          </button>
-        </div>
-      )}
 
-      {successMessage && (
-        <div className="bg-success/10 border border-success rounded-xl p-5 mt-4 animate-fadeIn">
-          <h4 className="font-semibold text-success mb-1">Success</h4>
-          <p className="text-sm opacity-80">{successMessage}</p>
-        </div>
-      )}
-    </div>
+            <Button label={"Search"} onClick={handleSearch} />
+          </div>
+        </Section>
+
+        {/* Car Snapshot */}
+        {selectedCar && (
+          <Section header="Car Info">
+            <div className="grid md:grid-cols-3 gap-4 text-sm">
+              <ListingPreviewInfo label={"Make / Model"} value={`${selectedCar.make} ${selectedCar.model}`} />
+              <ListingPreviewInfo label={"Year"} value={selectedCar.year} />
+              <ListingPreviewInfo label={"Mileage"} value={`${selectedCar.mileage.toLocaleString()} km`} />
+
+              <div>
+                <p className="opacity-60">Status</p>
+                <span className="badge badge-outline">
+                  {CarStatus[selectedCar.status]}
+                </span>
+              </div>
+
+              <div className="md:col-span-3">
+                <p className="opacity-60">Equipment</p>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {selectedCar.equipment.map(eq => (
+                    <span key={eq.code} className="badge badge-outline">
+                      {selectedCar.equipment.find(e => e.code === eq.code)?.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Section>
+        )}
+
+        {/* Edit Listing Form */}
+        {/* {listing && (
+          <div className="bg-base-100 p-6 rounded-xl shadow-sm">
+            <h3 className="font-semibold mb-4">Listing Details</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <Input
+                label="Price"
+                type="number"
+                value={listing.price}
+                onChange={(e) => handleChange("price", Number(e.target.value))}
+              />
+              <Select
+                label="Status"
+                options={["Active", "Draft", "Archived"]}
+                value={listing.status}
+                onChange={(val) => handleChange("status", val as Listing["status"])}
+              />
+              <div className="md:col-span-2">
+                <label className="label">
+                  <span className="label-text">Description</span>
+                </label>
+                <textarea
+                  className="textarea rounded-lg w-full"
+                  rows={4}
+                  value={listing.description}
+                  onChange={(e) => handleChange("description", e.target.value)}
+                />
+              </div>
+            </div>
+
+          </div>
+        )} */}
+
+        {/* Edit Listing Form */}
+        {listing && (
+          <Form
+            header=""
+            onSubmit={handleSubmit(onSubmit, (errors) => console.log("validation failed", errors))}
+          >
+            <Section header={"Listing Details"} >
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* <Input
+                  label="Price"
+                  type="number"
+                  value={listing.price}
+                  onChange={(e) => handleChange("price", Number(e.target.value))}
+                /> */}
+                <InputZod
+                  label="Price" {...register("price", { valueAsNumber: true })}
+                  error={updateListingErrors.price?.message}
+                />
+                {/* <Select
+                  label="Status"
+                  options={["Active", "Draft", "Archived"]}
+                  value={listing.status}
+                  onChange={(val) => handleChange("status", val as Listing["status"])}
+                /> */}
+
+                {/* TODO: clean up the mess with Select, why rhf and not zod like InputZod */}
+                <SelectRHF
+                  label="Status"
+                  options={["Active", "Draft", "Archived"]}
+                  value={status}
+                  onChange={(val) => setStatus(val as typeof status)}
+                />
+              </div>
+
+              <fieldset className="fieldset mx-2 mt-2">
+                <legend className="fieldset-legend">Description</legend>
+                <textarea
+                  className="textarea h-24 rounded-lg w-full"
+                  value={listing.description}
+                  onChange={(e) => handleChange("description", e.target.value)}
+                />
+              </fieldset>
+            </Section>
+          </Form>
+        )}
+
+        {successMessage && (
+          <div className="bg-success/10 border border-success rounded-xl p-5 mt-4 animate-fadeIn">
+            <h4 className="font-semibold text-success mb-1">Success</h4>
+            <p className="text-sm opacity-80">{successMessage}</p>
+          </div>
+        )}
+
+        {selectedCar && (
+          <Button label={"Save Changes"} type="submit" />
+        )}
+
+      </div>
+    </DashboardModal>
   );
 };
+
+// TODO: wspolne z UpdateCarForm i create listing
+const ListingPreviewInfo = ({ label, value }: { label: string, value: string }) => {
+  return (
+    <div>
+      <p className="opacity-60">{label}</p>
+      <p className="font-medium">{value}</p>
+    </div>
+  )
+}
+
+
+// <div className="bg-base-100 p-6 rounded-xl shadow-sm">
+//   <h3 className="font-semibold mb-4">Listing Details</h3>
+//   <div className="grid md:grid-cols-2 gap-6">
+//     <Input
+//       label="Price"
+//       type="number"
+//       value={listing.price}
+//       onChange={(e) => handleChange("price", Number(e.target.value))}
+//     />
+//     <Select
+//       label="Status"
+//       options={["Active", "Draft", "Archived"]}
+//       value={listing.status}
+//       onChange={(val) => handleChange("status", val as Listing["status"])}
+//     />
+//     <div className="md:col-span-2">
+//       <label className="label">
+//         <span className="label-text">Description</span>
+//       </label>
+//       <textarea
+//         className="textarea rounded-lg w-full"
+//         rows={4}
+//         value={listing.description}
+//         onChange={(e) => handleChange("description", e.target.value)}
+//       />
+//     </div>
+//   </div>
+
+// </div>
+
+
+
+
+
+// return (
+//     <div className="modal-box max-w-4xl bg-base-200 animate-fadeIn relative max-h-[95vh] overflow-y-auto">
+//       <form method="dialog">
+//         <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">
+//           ✕
+//         </button>
+//       </form>
+
+//       <h2 className="text-2xl font-bold mb-6">Edit Listing</h2>
+
+//       {/* VIN Search */}
+//       <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6">
+//         <h3 className="text-sm font-semibold mb-3">Find Listing by VIN</h3>
+//         <div className="flex gap-4 items-end">
+//           <div className="flex-1">
+//             <Input
+//               label="VIN"
+//               value={vinSearch}
+//               onChange={(e) => setVinSearch(e.target.value)}
+//             />
+//             {vinNotFound && (
+//               <p className="text-error text-xs mt-1">No listing found for a car with this VIN</p>
+//             )}
+//           </div>
+//           <button className="btn btn-primary" type="button" onClick={handleSearch}>
+//             Search
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* Car Snapshot */}
+//       {selectedCar && (
+//         <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6 animate-fadeIn">
+//           <h3 className="text-sm font-semibold mb-4">Car Snapshot</h3>
+//           <div className="grid md:grid-cols-3 gap-4 text-sm">
+//             <div>
+//               <p className="opacity-60">Make / Model</p>
+//               <p className="font-medium">{selectedCar.make} {selectedCar.model}</p>
+//             </div>
+//             <div>
+//               <p className="opacity-60">Year</p>
+//               <p className="font-medium">{selectedCar.year}</p>
+//             </div>
+//             <div>
+//               <p className="opacity-60">Mileage</p>
+//               <p className="font-medium">{selectedCar.mileage.toLocaleString()} km</p>
+//             </div>
+//             <div>
+//               <p className="opacity-60">Body Type</p>
+//               <p className="font-medium">{selectedCar.body}</p>
+//             </div>
+//             <div className="md:col-span-3">
+//               <p className="opacity-60">Equipment</p>
+//               <div className="flex flex-wrap gap-2 mt-1">
+//                 {selectedCar.equipment.map((code) => (
+//                   <span key={code} className="badge badge-primary badge-outline">{code}</span>
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Edit Listing Form */}
+//       {listing && (
+//         <div className="bg-base-100 p-6 rounded-xl shadow-sm mb-6">
+//           <h3 className="font-semibold mb-4">Listing Details</h3>
+//           <div className="grid md:grid-cols-2 gap-6">
+//             <Input
+//               label="Price"
+//               type="number"
+//               value={listing.price}
+//               onChange={(e) => handleChange("price", Number(e.target.value))}
+//             />
+//             <Select
+//               label="Status"
+//               options={["Active", "Draft", "Archived"]}
+//               value={listing.status}
+//               onChange={(val) => handleChange("status", val as Listing["status"])}
+//             />
+//             <div className="md:col-span-2">
+//               <label className="label">
+//                 <span className="label-text">Description</span>
+//               </label>
+//               <textarea
+//                 className="textarea textarea-bordered w-full"
+//                 rows={4}
+//                 value={listing.description}
+//                 onChange={(e) => handleChange("description", e.target.value)}
+//               />
+//             </div>
+//           </div>
+//           <button
+//             className="btn btn-lg btn-primary mt-4 w-full"
+//             type="button"
+//             onClick={handleSave}
+//           >
+//             Save Changes
+//           </button>
+//         </div>
+//       )}
+
+//       {successMessage && (
+//         <div className="bg-success/10 border border-success rounded-xl p-5 mt-4 animate-fadeIn">
+//           <h4 className="font-semibold text-success mb-1">Success</h4>
+//           <p className="text-sm opacity-80">{successMessage}</p>
+//         </div>
+//       )}
+//     </div>
+//   );

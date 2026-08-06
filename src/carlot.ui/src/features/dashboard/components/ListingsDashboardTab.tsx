@@ -24,7 +24,7 @@ export const ListingsDashboardTab = () => {
           <CreateListingForm />
         </DashboardActionButton>
 
-        <DashboardActionButton label={"Edit Listing"}>
+        <DashboardActionButton label={"Update Listing"}>
           <EditListingForm />
         </DashboardActionButton>
       </DashboardActionsSection>

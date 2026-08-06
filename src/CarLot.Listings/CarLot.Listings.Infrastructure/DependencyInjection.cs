@@ -1,4 +1,5 @@
 ﻿using CarLot.Listings.Application.Interfaces;
+using CarLot.Listings.Infrastructure.HttpClients;
 using CarLot.Listings.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +37,11 @@ public static class DependencyInjection
             });
         }
 
-        services.AddScoped<IListingRepository, ListingRepository>();
+        services
+            .AddHttpClient<ICatalogClient, CatalogClient>();
+
+        services
+            .AddScoped<IListingRepository, ListingRepository>();
 
         return services;
     }

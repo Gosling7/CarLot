@@ -1,11 +1,12 @@
 ﻿using CarLot.Core;
 using CarLot.Listings.Application.DTOs;
+using CarLot.Listings.Application.Interfaces;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace CarLot.Listings.Infrastructure.HttpClients;
 
-internal class CatalogClient
+public class CatalogClient : ICatalogClient
 {
     private readonly HttpClient _httpClient;
 

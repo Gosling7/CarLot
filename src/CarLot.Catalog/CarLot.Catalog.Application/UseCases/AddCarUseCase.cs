@@ -45,7 +45,7 @@ public class AddCarUseCase
             return Result.Failure(errors);
         }
 
-        var isVinUnique = await _carRepository.IsVinAlreadyPresentAsync(request.Vin);
+        var isVinUnique = await _carRepository.IsVinUniqueAsync(request.Vin);
 
         var result = Car.Create(
             request.Vin,

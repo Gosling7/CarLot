@@ -3,15 +3,13 @@ using DriveType = CarLot.Core.DriveType;
 
 namespace CarLot.Listings.Application.DTOs;
 
-public record CarDto(
-    Guid Id,
-    string Vin,
-    string Make,
-    string Model,
+public record ListingDto(
+    string VIN, 
+    string Make, 
+    string Model, 
     int Year,
     FuelType FuelType,
     Transmission Transmission,
-    AdditionalFuelType AdditionalFuelType,
     int PowerHp,
     float? EngineDisplacement,
     bool Turbocharged,
@@ -20,9 +18,8 @@ public record CarDto(
     DriveType DriveType,
     int MileageKm,
     string Location,
-    int Version,
+    string Description,
+    decimal Price,
+    List<EquipmentDto> Equipment,
     DateTime CreatedAtUtc,
-    DateTime? UpdatedAtUtc,
-    CarStatus Status,
-    List<EquipmentDto> Equipment
-);
+    DateTime? UpdatedAtUtc);

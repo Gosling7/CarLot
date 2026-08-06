@@ -19,6 +19,6 @@ internal class AddCarRequestValidator : AbstractValidator<AddCarRequest>
 
     private async Task<bool> BeUnique(string vin, CancellationToken cancellationToken)
     {
-        return !await _carRepository.IsVinAlreadyPresentAsync(vin);
+        return await _carRepository.IsVinUniqueAsync(vin);
     }
 }

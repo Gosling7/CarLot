@@ -10,7 +10,7 @@ public interface ICarRepository
     Task<PaginatedResponse<CarDto>> GetAsync(GetCarsRequest request);
     Task<CarStatsDto> GetCarStatsAsync();
     Task SaveChangesAsync();
-    Task<bool> IsVinAlreadyPresentAsync(string vin);
+    Task<bool> IsVinUniqueAsync(string vin);
     Task<Car?> GetEntityByVinAsync(string vin);
     Task UpdateMileage(int mileage);
     Task DeleteAsync(Guid carId);

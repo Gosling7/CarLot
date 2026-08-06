@@ -109,4 +109,21 @@ public class Listing
             price: price,
             equipment: equipment));
     }
+
+    public void UpdatePrice(decimal newPrice)
+    {
+        Price = newPrice;
+        Version++;
+    }
+
+    public void UpdateDescription(string newDescription)
+    {
+        Description = newDescription;
+        Version++;
+    }
+
+    public void UpdateStatus()
+    {
+
+    }
 }
