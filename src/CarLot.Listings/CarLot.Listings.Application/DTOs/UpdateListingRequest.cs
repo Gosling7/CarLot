@@ -2,8 +2,8 @@
 
 namespace CarLot.Listings.Application.DTOs;
 
-public record AddListingRequest(
+public record UpdateListingRequest(
     string Vin,
-    decimal Price,
     string Description,
-    ListingStatus status);
+    decimal Price,
+    ListingStatus Status);

@@ -34,5 +34,8 @@ internal class ListingConfiguration : IEntityTypeConfiguration<Listing>
 
         builder.Property(c => c.Version)
             .IsConcurrencyToken();
+
+        builder.HasMany(l => l.Equipment)
+            .WithMany(e => e.lis)
     }
 }

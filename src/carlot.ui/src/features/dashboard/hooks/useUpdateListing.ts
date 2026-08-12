@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios";
+import type { UpdateListingRequest } from "@/types/requests/UpdateListingRequest";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type UseUpdateListingOptions = {
@@ -22,8 +23,8 @@ export function useUpdateListing({ vin, onSuccess }: UseUpdateListingOptions) {
 }
 
 // TODO: move somewhere
-type UpdateListingRequest = {
-  description: string;
-  price: number;
-  status: string;
-};
+// type UpdateListingRequest = {
+//   description: string;
+//   price: number;
+//   status: string;
+// };

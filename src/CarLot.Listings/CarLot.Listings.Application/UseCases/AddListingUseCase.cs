@@ -54,7 +54,8 @@ public class AddListingUseCase
                 Id = e.Id, 
                 Name = e.Name, 
                 Code = e.Code,
-            }).ToList()); 
+            }).ToList(),
+            request.status); 
 
         if (!result.IsSuccess)
         {

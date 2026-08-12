@@ -13,9 +13,7 @@ public static class DependencyInjection
             .AddScoped<GetListingByVinQuery>()
 
             .AddScoped<AddListingUseCase>()
-            .AddScoped<UpdateListingDescriptionUseCase>()
-            .AddScoped<UpdateListingPriceUseCase>()
-            .AddScoped<UpdateListingStatusUseCase>();
+            .AddScoped<UpdateListingUseCase>();
 
         return services;
     }

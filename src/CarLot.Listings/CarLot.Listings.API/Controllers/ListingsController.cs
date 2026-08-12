@@ -11,23 +11,26 @@ namespace CarLot.Listings.API.Controllers;
 public class ListingsController : ControllerBase
 {
     private readonly AddListingUseCase _addListingUseCase;
-    private readonly UpdateListingPriceUseCase _updateListingPriceUseCase;
-    private readonly UpdateListingDescriptionUseCase _updateListingDescriptionUseCase;
-    private readonly UpdateListingStatusUseCase _updateListingStatusUseCase;
     private readonly GetListingByVinQuery _getListingByVinQuery;
+    private readonly UpdateListingUseCase _updateListingUseCase;
+    //private readonly UpdateListingPriceUseCase _updateListingPriceUseCase;
+    //private readonly UpdateListingDescriptionUseCase _updateListingDescriptionUseCase;
+    //private readonly UpdateListingStatusUseCase _updateListingStatusUseCase;
 
     public ListingsController(
         AddListingUseCase addListingUseCase,
         GetListingByVinQuery getListingByVinQuery,
-        UpdateListingPriceUseCase updateListingPriceUseCase,
-        UpdateListingDescriptionUseCase updateListingDescriptionUseCase,
-        UpdateListingStatusUseCase updateListingStatusUseCase)
+        UpdateListingUseCase updateListingUseCase
+        //UpdateListingPriceUseCase updateListingPriceUseCase,
+        //UpdateListingDescriptionUseCase updateListingDescriptionUseCase,
+        //UpdateListingStatusUseCase updateListingStatusUseCase
+        )
     {
         _addListingUseCase = addListingUseCase;
         _getListingByVinQuery = getListingByVinQuery;
-        _updateListingPriceUseCase = updateListingPriceUseCase;
-        _updateListingDescriptionUseCase = updateListingDescriptionUseCase;
-        _updateListingStatusUseCase = updateListingStatusUseCase;
+        //_updateListingPriceUseCase = updateListingPriceUseCase;
+        //_updateListingDescriptionUseCase = updateListingDescriptionUseCase;
+        //_updateListingStatusUseCase = updateListingStatusUseCase;
     }
 
     [HttpPost]
@@ -50,33 +53,36 @@ public class ListingsController : ControllerBase
 
     [HttpPatch]
     [Route("{vin}/price")]
-    public async Task<IActionResult> UpdateListingPriceByVin(string vin, [FromBody] decimal price, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateListingPriceByVin(
+        [FromRoute] string vin, 
+        [FromBody] UpdateListingRequest request,
+        CancellationToken cancellationToken)
     {
-        var result = await _updateListingPriceUseCase.ExecuteAsync(vin, price, cancellationToken);
+        var result = await _updateListingUseCase.ExecuteAsync(request, cancellationToken);
         return result.IsSuccess
             ? Ok()
             : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
     }
 
-    [HttpPatch]
-    [Route("{vin}/description")]
-    public async Task<IActionResult> UpdateListingDescriptionByVin(string vin, [FromBody] string description, CancellationToken cancellationToken)
-    {
-        var result = await _updateListingDescriptionUseCase.ExecuteAsync(vin, description, cancellationToken);
-        return result.IsSuccess
-            ? Ok()
-            : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
-    }
+    //[HttpPatch]
+    //[Route("{vin}/description")]
+    //public async Task<IActionResult> UpdateListingDescriptionByVin(string vin, [FromBody] string description, CancellationToken cancellationToken)
+    //{
+    //    var result = await _updateListingDescriptionUseCase.ExecuteAsync(vin, description, cancellationToken);
+    //    return result.IsSuccess
+    //        ? Ok()
+    //        : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
+    //}
 
-    [HttpPatch]
-    [Route("{vin}/status")]
-    public async Task<IActionResult> UpdateListingStatusByVin(string vin, [FromBody] string status, CancellationToken cancellationToken)
-    {
-        var result = await _updateListingStatusUseCase.ExecuteAsync(vin, status, cancellationToken);
-        return result.IsSuccess
-            ? Ok()
-            : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
-    }
+    //[HttpPatch]
+    //[Route("{vin}/status")]
+    //public async Task<IActionResult> UpdateListingStatusByVin(string vin, [FromBody] string status, CancellationToken cancellationToken)
+    //{
+    //    var result = await _updateListingStatusUseCase.ExecuteAsync(vin, status, cancellationToken);
+    //    return result.IsSuccess
+    //        ? Ok()
+    //        : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
+    //}
 
     // TODO: temporary, move into Core
     public static ValidationProblemDetails CreateValidationProblemDetails(
