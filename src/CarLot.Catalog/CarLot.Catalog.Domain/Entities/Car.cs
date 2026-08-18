@@ -74,7 +74,7 @@ public class Car
         Status = CarStatus.Received;
         CreatedAtUtc = DateTime.UtcNow;
 
-        _equipment.AddRange(equipment ?? Enumerable.Empty<Equipment>());
+        Equipment.AddRange(equipment ?? Enumerable.Empty<Equipment>());
 
         _domainEvents.Add(new CarCreatedEvent(id));
     }
@@ -95,7 +95,7 @@ public class Car
         Enums.DriveType driveType,
         int mileageKm,
         string location,
-        IEnumerable<Equipment> equipment,
+        List<Equipment> equipment,
         bool isVinUnique)
     {
         if (!isVinUnique)

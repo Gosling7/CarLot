@@ -3,7 +3,7 @@ import { AddCarSchema, type AddCarFormValues } from "@/lib/validation/addCar.sch
 import type { AddCarRequest } from "@/types/AddCarRequest";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import type { ProblemDetails } from "@/types/ProblemDetails";
 import { Section } from "@/components/Section";
 import { InputZod } from "@/components/Input";
@@ -46,6 +46,7 @@ export const AddCarForm = () => {
   const {
     register,
     handleSubmit,
+    control,
     getValues,
     setValue,
     setError,
@@ -66,7 +67,7 @@ export const AddCarForm = () => {
     });
   };
 
-  const equipmentCodes = getValues("equipmentCodes") ?? [];
+  const equipmentCodes = useWatch({ control, name: "equipmentCodes" }) ?? [];
   const filteredEquipment = equipment.filter(e =>
     e.name.toLowerCase().includes(equipmentSearch.toLowerCase())
   ) as EquipmentDto[];
@@ -165,6 +166,7 @@ export const AddCarForm = () => {
 
           <CarEquipment
             equipment={sortedEquipment}
+            checkedEquipmentCodes={equipmentCodes}
             onToggle={onToggle}
           />
         </Section>
