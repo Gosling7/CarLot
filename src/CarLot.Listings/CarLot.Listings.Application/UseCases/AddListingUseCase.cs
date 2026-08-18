@@ -51,7 +51,6 @@ public class AddListingUseCase
             request.Price,
             car.Equipment.Select(e => new Equipment
             {
-                Id = e.Id, 
                 Name = e.Name, 
                 Code = e.Code,
             }).ToList(),

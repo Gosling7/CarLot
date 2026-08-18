@@ -64,7 +64,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/listings/{vin}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [ "GET", "PATCH" ],
       "DownstreamPathTemplate": "/api/listings/{vin}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -73,7 +73,7 @@
           "Port": 5002
         }
       ]
-    }
+    },
   ],
   "DynamicRoutes": [], // optional section
   "GlobalConfiguration": { // required

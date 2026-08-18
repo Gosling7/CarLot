@@ -28,6 +28,7 @@ public class ListingsController : ControllerBase
     {
         _addListingUseCase = addListingUseCase;
         _getListingByVinQuery = getListingByVinQuery;
+        _updateListingUseCase = updateListingUseCase;
         //_updateListingPriceUseCase = updateListingPriceUseCase;
         //_updateListingDescriptionUseCase = updateListingDescriptionUseCase;
         //_updateListingStatusUseCase = updateListingStatusUseCase;
@@ -52,9 +53,9 @@ public class ListingsController : ControllerBase
     }
 
     [HttpPatch]
-    [Route("{vin}/price")]
-    public async Task<IActionResult> UpdateListingPriceByVin(
-        [FromRoute] string vin, 
+    [Route("{vin}")]
+    public async Task<IActionResult> UpdateListingByVin(
+        [FromRoute] string vin,
         [FromBody] UpdateListingRequest request,
         CancellationToken cancellationToken)
     {
@@ -63,6 +64,19 @@ public class ListingsController : ControllerBase
             ? Ok()
             : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
     }
+
+    //[HttpPatch]
+    //[Route("{vin}/price")]
+    //public async Task<IActionResult> UpdateListingPriceByVin(
+    //    [FromRoute] string vin, 
+    //    [FromBody] UpdateListingRequest request,
+    //    CancellationToken cancellationToken)
+    //{
+    //    var result = await _updateListingUseCase.ExecuteAsync(request, cancellationToken);
+    //    return result.IsSuccess
+    //        ? Ok()
+    //        : BadRequest(CreateValidationProblemDetails(HttpContext, result.Errors));
+    //}
 
     //[HttpPatch]
     //[Route("{vin}/description")]

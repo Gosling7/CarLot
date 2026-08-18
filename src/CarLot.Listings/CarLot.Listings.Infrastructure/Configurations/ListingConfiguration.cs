@@ -36,6 +36,6 @@ internal class ListingConfiguration : IEntityTypeConfiguration<Listing>
             .IsConcurrencyToken();
 
         builder.HasMany(l => l.Equipment)
-            .WithMany(e => e.lis)
+            .WithMany(e => e.Listing);
     }
 }
