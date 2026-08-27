@@ -1,6 +1,6 @@
 ﻿using CarLot.Catalog.Application.DTOs;
 using CarLot.Catalog.Application.Interfaces;
-using CarLot.Catalog.Domain.ValueObjects;
+using CarLot.Catalog.Domain.Entities;
 using CarLot.Catalog.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 

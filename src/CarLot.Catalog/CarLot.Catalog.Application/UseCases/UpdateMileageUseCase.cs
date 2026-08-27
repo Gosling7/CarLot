@@ -19,7 +19,7 @@ public class UpdateMileageUseCase
         if (car is null)
         {
             return Result.Failure(
-                [new Error(nameof(Car.VIN), "No car with the given vin")]);
+                [new Error(nameof(Car.Vin), "No car with the given vin")]);
         }
 
         var result = car.UpdateMileage(mileage);

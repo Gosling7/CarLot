@@ -1,4 +1,4 @@
-﻿using CarLot.Catalog.Domain.ValueObjects;
+﻿using CarLot.Catalog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,10 +14,5 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
         builder.Property(e => e.Name)
                .HasMaxLength(200)
                .IsRequired();
-
-        //builder.HasOne(e => e.Category)
-        //    .WithMany()
-        //    .HasForeignKey(e => e.CategoryId)
-        //    .OnDelete(DeleteBehavior.Restrict);
     }
 }

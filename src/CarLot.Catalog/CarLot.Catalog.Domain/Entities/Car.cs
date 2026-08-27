@@ -1,4 +1,4 @@
-﻿using CarLot.Catalog.Domain.Enums;
+using CarLot.Catalog.Domain.Enums;
 using CarLot.Catalog.Domain.Events;
 using CarLot.Catalog.Domain.ValueObjects;
 
@@ -6,20 +6,25 @@ namespace CarLot.Catalog.Domain.Entities;
 
 public class Car
 {
-    private List<Equipment> _equipment = [];
+    private static readonly Dictionary<CarStatus, CarStatus[]> AllowedStatusTransitions = new()
+    {
+        [CarStatus.Received] = [CarStatus.NeedUpdate, CarStatus.ReadyForListing],
+        [CarStatus.NeedUpdate] = [CarStatus.ReadyForListing],
+        [CarStatus.ReadyForListing] = [CarStatus.LiveListing],
+        [CarStatus.LiveListing] = [CarStatus.Archived],
+        [CarStatus.Archived] = [],
+    };
+
+    private readonly List<Equipment> _equipment = [];
     private readonly List<IDomainEvent> _domainEvents = new();
 
     public Guid Id { get; }
-    public string VIN { get; private set; }
+    public Vin Vin { get; private set; }
     public string Make { get; private set; }
     public string Model { get; private set; }
     public int Year { get; private set; }
-    public FuelType FuelType { get; private set; }
-    public AdditionalFuelType AdditionalFuelType { get; private set; }
+    public Engine Engine { get; private set; }
     public TransmissionType Transmission { get; private set; }
-    public int PowerHp { get; private set; }
-    public float? EngineDisplacement { get; private set; }
-    public bool Turbocharged { get; private set; } = false;
     public string Body { get; private set; }
     public string RegistrationPlate { get; private set; }
     public Enums.DriveType DriveType { get; private set; }
@@ -30,24 +35,20 @@ public class Car
     public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
     public DateTime? UpdatedAtUtc { get; private set; }
 
-    public List<Equipment> Equipment { get; set; } = [];
+    public IReadOnlyCollection<Equipment> Equipment => _equipment.AsReadOnly();
 
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     private Car() { } // for ef core
 
-    public Car(
+    private Car(
         Guid id,
-        string vin,
+        Vin vin,
         string make,
         string model,
         int year,
-        FuelType fuelType,
-        AdditionalFuelType additionalFuelType,
+        Engine engine,
         TransmissionType transmission,
-        int powerHp,
-        float? engineDisplacement,
-        bool turbocharged,
         string body,
         string registrationPlate,
         Enums.DriveType driveType,
@@ -56,16 +57,12 @@ public class Car
         IEnumerable<Equipment> equipment)
     {
         Id = id;
-        VIN = vin;
+        Vin = vin;
         Make = make;
         Model = model;
         Year = year;
-        FuelType = fuelType;
-        AdditionalFuelType = additionalFuelType;
+        Engine = engine;
         Transmission = transmission;
-        PowerHp = powerHp;
-        EngineDisplacement = engineDisplacement;
-        Turbocharged = turbocharged;
         Body = body;
         RegistrationPlate = registrationPlate;
         DriveType = driveType;
@@ -74,7 +71,7 @@ public class Car
         Status = CarStatus.Received;
         CreatedAtUtc = DateTime.UtcNow;
 
-        Equipment.AddRange(equipment ?? Enumerable.Empty<Equipment>());
+        _equipment.AddRange(equipment ?? Enumerable.Empty<Equipment>());
 
         _domainEvents.Add(new CarCreatedEvent(id));
     }
@@ -84,12 +81,8 @@ public class Car
         string make,
         string model,
         int year,
-        FuelType fuelType,
-        AdditionalFuelType additionalFuelType,
+        Engine engine,
         TransmissionType transmission,
-        int powerHp,
-        float? engineDisplacement,
-        bool turbocharged,
         string body,
         string registrationPlate,
         Enums.DriveType driveType,
@@ -98,28 +91,29 @@ public class Car
         List<Equipment> equipment,
         bool isVinUnique)
     {
+        var vinResult = Vin.Create(vin);
+        var errors = new List<Error>(vinResult.Errors);
+
         if (!isVinUnique)
         {
-            return Result<Car>.Failure(
-                [new Error(nameof(VIN), "Car with the given VIN is already in the catalog.")]);
+            errors.Add(new Error(nameof(Vin), "Car with the given VIN is already in the catalog."));
         }
 
-        // TODO: if electric then no transmission
-        // and other checks like that
-        // domain validations
+        errors.AddRange(ValidateInvariants(year, mileageKm, engine, transmission));
+
+        if (errors.Count > 0)
+        {
+            return Result<Car>.Failure(errors);
+        }
 
         return Result<Car>.Success(new Car(
             id: Guid.NewGuid(),
-            vin: vin,
+            vin: vinResult.Value!,
             make: make,
             model: model,
             year: year,
-            fuelType: fuelType,
-            additionalFuelType: additionalFuelType,
+            engine: engine,
             transmission: transmission,
-            powerHp: powerHp,
-            engineDisplacement: engineDisplacement,
-            turbocharged: turbocharged,
             body: body,
             registrationPlate: registrationPlate,
             driveType: driveType,
@@ -137,48 +131,40 @@ public class Car
         }
 
         MileageKm = newMileage;
-        Version++;
+        IncrementVersion();
 
         return Result.Success();
     }
 
-    public void UpdateStatus(CarStatus newStatus)
+    public Result UpdateStatus(CarStatus newStatus)
     {
-        // TODO: check what domain validation is needed here
-
-        /*         
-        Received,
-        NeedUpdate,
-        ReadyForListing,
-        LiveListing,
-        Archived
-
-        Received -> ReadyForListing -> LiveListing -> Archived
-        Received -> NeedUpdate -> ReadyForListing -> LiveListing -> Archived
-        Received -> NeedUpdate -> ReadyForListing -> LiveListing -> Sold
-         */
-
+        if (!AllowedStatusTransitions[Status].Contains(newStatus))
+        {
+            return Result.Failure(
+                [new Error(nameof(Status), $"Cannot transition from {Status} to {newStatus}.")]);
+        }
 
         Status = newStatus;
-        Version++;
+        IncrementVersion();
+
+        return Result.Success();
     }
 
-    public void UpdateEquipment(List<Equipment> newEquipment)
+    public Result UpdateEquipment(IEnumerable<Equipment> newEquipment)
     {
-        Equipment = newEquipment;
-        Version++;
+        _equipment.Clear();
+        _equipment.AddRange(newEquipment);
+        IncrementVersion();
+
+        return Result.Success();
     }
 
     public Result Edit(
         string make,
         string model,
         int year,
-        FuelType fuelType,
-        AdditionalFuelType additionalFuelType,
+        Engine engine,
         TransmissionType transmission,
-        int powerHp,
-        float? engineDisplacement,
-        bool turbocharged,
         string body,
         string registrationPlate,
         Enums.DriveType driveType,
@@ -186,31 +172,56 @@ public class Car
         string location,
         List<Equipment> equipment)
     {
-        // TODO: same domain checks as Create e.g. electric + no transmission
-        // You may want to extract those into a private static Validate(...) method
-        // shared between Create and EditCar
+        var errors = ValidateInvariants(year, mileageKm, engine, transmission);
+        if (errors.Count > 0)
+        {
+            return Result.Failure(errors);
+        }
 
         Make = make;
         Model = model;
         Year = year;
-        FuelType = fuelType;
-        AdditionalFuelType = additionalFuelType;
+        Engine = engine;
         Transmission = transmission;
-        PowerHp = powerHp;
-        EngineDisplacement = engineDisplacement;
-        Turbocharged = turbocharged;
         Body = body;
         RegistrationPlate = registrationPlate;
         DriveType = driveType;
         MileageKm = mileageKm;
         Location = location;
-        Equipment = equipment;
 
-        UpdatedAtUtc = DateTime.UtcNow;
-        Version++;
+        _equipment.Clear();
+        _equipment.AddRange(equipment);
 
-        // _domainEvents.Add(new CarEditedEvent(id));
+        IncrementVersion();
 
         return Result.Success();
+    }
+
+    private static List<Error> ValidateInvariants(int year, int mileageKm, Engine engine, TransmissionType transmission)
+    {
+        var errors = new List<Error>();
+
+        if (year < 1900 || year > DateTime.UtcNow.Year + 1)
+        {
+            errors.Add(new Error(nameof(Year), "Year is out of range."));
+        }
+
+        if (mileageKm < 0)
+        {
+            errors.Add(new Error(nameof(MileageKm), "Mileage cannot be negative."));
+        }
+
+        if (engine.FuelType == FuelType.Electric && transmission != TransmissionType.Automatic)
+        {
+            errors.Add(new Error(nameof(Transmission), "Electric cars must use automatic transmission."));
+        }
+
+        return errors;
+    }
+
+    private void IncrementVersion()
+    {
+        UpdatedAtUtc = DateTime.UtcNow;
+        Version++;
     }
 }

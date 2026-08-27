@@ -25,7 +25,7 @@ internal class CarRepository : ICarRepository
             var s = search.ToLower();
 
             query = query.Where(c =>
-                c.VIN.ToLower().Contains(s) ||
+                c.Vin.Value.ToLower().Contains(s) ||
                 c.Make.ToLower().Contains(s) ||
                 c.Model.ToLower().Contains(s));
         }
@@ -61,7 +61,7 @@ internal class CarRepository : ICarRepository
     {
         return await _dbContext.Cars
             .Include(c => c.Equipment)
-            .Where(c => c.VIN == vin)
+            .Where(c => c.Vin.Value == vin)
             .FirstOrDefaultAsync();
     }
 
@@ -69,7 +69,7 @@ internal class CarRepository : ICarRepository
     {
         return await _dbContext.Cars
             .Include(c => c.Equipment)
-            .Where(c => c.VIN == vin)
+            .Where(c => c.Vin.Value == vin)
             .Select(c => c.ToDto())
             .AsNoTracking()
             .FirstOrDefaultAsync();
@@ -90,7 +90,7 @@ internal class CarRepository : ICarRepository
 
     public async Task<bool> IsVinUniqueAsync(string vin)
     {
-        return await _dbContext.Cars.AnyAsync(c => c.VIN != vin);
+        return !await _dbContext.Cars.AnyAsync(c => c.Vin.Value == vin);
     }
 
     public Task DeleteAsync(Guid carId)

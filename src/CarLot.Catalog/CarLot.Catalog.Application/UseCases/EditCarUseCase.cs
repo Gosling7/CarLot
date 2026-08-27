@@ -1,6 +1,7 @@
 ﻿using CarLot.Catalog.Application.DTOs;
 using CarLot.Catalog.Application.Interfaces;
 using CarLot.Catalog.Domain;
+using CarLot.Catalog.Domain.ValueObjects;
 
 namespace CarLot.Catalog.Application.UseCases;
 
@@ -36,16 +37,24 @@ public class EditCarUseCase
             return Result.Failure(errors);
         }
         
+        var engineResult = Engine.Create(
+            request.FuelType,
+            request.AdditionalFuelType,
+            request.PowerHp,
+            request.EngineDisplacement,
+            request.Turbocharged);
+
+        if (!engineResult.IsSuccess)
+        {
+            return engineResult;
+        }
+
         var result = existingCar.Edit(
             make: request.Make,
             model: request.Model,
             year: request.Year,
-            fuelType: request.FuelType,
-            additionalFuelType: request.AdditionalFuelType,
+            engine: engineResult.Value!,
             transmission: request.Transmission,
-            powerHp: request.PowerHp,
-            engineDisplacement: request.EngineDisplacement,
-            turbocharged: request.Turbocharged,
             body: request.Body,
             registrationPlate: request.RegistrationPlate,
             driveType: request.DriveType,

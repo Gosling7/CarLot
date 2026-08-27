@@ -1,4 +1,4 @@
-﻿using CarLot.Catalog.Domain.Entities;
+using CarLot.Catalog.Domain.Entities;
 using CarLot.Core.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -12,10 +12,24 @@ internal class CarConfiguration : IEntityTypeConfiguration<Car>
         builder.ToTable("Cars")
             .HasKey(c => c.Id);
 
-        builder.Property(c => c.VIN)
-            .HasMaxLength(CarSchema.VinMaxLength);
-        builder.HasIndex(c => c.VIN)
-            .IsUnique();
+        builder.OwnsOne(c => c.Vin, vin =>
+        {
+            vin.Property(v => v.Value)
+                .HasColumnName("VIN")
+                .HasMaxLength(CarSchema.VinMaxLength);
+
+            vin.HasIndex(v => v.Value)
+                .IsUnique();
+        });
+
+        builder.OwnsOne(c => c.Engine, engine =>
+        {
+            engine.Property(e => e.FuelType).HasColumnName("FuelType");
+            engine.Property(e => e.AdditionalFuelType).HasColumnName("AdditionalFuelType");
+            engine.Property(e => e.PowerHp).HasColumnName("PowerHp");
+            engine.Property(e => e.EngineDisplacement).HasColumnName("EngineDisplacement");
+            engine.Property(e => e.Turbocharged).HasColumnName("Turbocharged");
+        });
 
         builder.Property(c => c.Make)
             .HasMaxLength(CarSchema.MakeMaxLength);
@@ -36,9 +50,6 @@ internal class CarConfiguration : IEntityTypeConfiguration<Car>
             .IsConcurrencyToken();
 
         builder.HasMany(c => c.Equipment)
-            .WithMany(ce => ce.Car);
-
-        //.HasForeignKey(ce => ce.CarId)
-        //.OnDelete(DeleteBehavior.Cascade);
+            .WithMany();
     }
 }

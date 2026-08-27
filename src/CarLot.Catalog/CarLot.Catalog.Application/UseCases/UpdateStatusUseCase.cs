@@ -38,10 +38,14 @@ public class UpdateStatusUseCase
         if (car is null)
         {
             return Result.Failure(
-                [new Error(nameof(Car.VIN), "No car with the given vin")]);
+                [new Error(nameof(Car.Vin), "No car with the given vin")]);
         }
 
-        car.UpdateStatus(request.Status);
+        var updateResult = car.UpdateStatus(request.Status);
+        if (!updateResult.IsSuccess)
+        {
+            return updateResult;
+        }
 
         await _carRepository.SaveChangesAsync();
 

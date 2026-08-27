@@ -2,6 +2,7 @@
 using CarLot.Catalog.Application.Interfaces;
 using CarLot.Catalog.Domain;
 using CarLot.Catalog.Domain.Entities;
+using CarLot.Catalog.Domain.ValueObjects;
 using FluentValidation;
 
 namespace CarLot.Catalog.Application.UseCases;
@@ -45,19 +46,27 @@ public class AddCarUseCase
             return Result.Failure(errors);
         }
 
+        var engineResult = Engine.Create(
+            request.FuelType,
+            request.AdditionalFuelType,
+            request.PowerHp,
+            request.EngineDisplacement,
+            request.Turbocharged);
+
+        if (!engineResult.IsSuccess)
+        {
+            return engineResult;
+        }
+
         var isVinUnique = await _carRepository.IsVinUniqueAsync(request.Vin);
 
-        var result = Car.Create(
+        var carResult = Car.Create(
             request.Vin,
             request.Make,
             request.Model,
             request.Year,
-            request.FuelType,
-            request.AdditionalFuelType,
+            engineResult.Value!,
             request.Transmission,
-            request.PowerHp,
-            request.EngineDisplacement,
-            request.Turbocharged,
             request.Body,
             request.RegistrationPlate,
             request.DriveType,
@@ -66,12 +75,12 @@ public class AddCarUseCase
             equipment,
             isVinUnique);
 
-        if (!result.IsSuccess)
+        if (!carResult.IsSuccess)
         {
-            return result;
+            return carResult;
         }
 
-        var car = result.Value!;
+        var car = carResult.Value!;
         await _carRepository.AddAsync(car);
 
         return Result<Guid>.Success(car.Id);

@@ -1,6 +1,7 @@
 ﻿using CarLot.Catalog.Application.DTOs;
 using CarLot.Catalog.Application.Interfaces;
 using CarLot.Catalog.Domain;
+using CarLot.Catalog.Domain.Entities;
 
 namespace CarLot.Catalog.Application.UseCases;
 
@@ -23,7 +24,7 @@ public class UpdateEquipmentUseCase
         if (car is null)
         {
             return Result.Failure(
-                [new Error(nameof(car.VIN), "No car with the given vin")]);
+                [new Error(nameof(Car.Vin), "No car with the given vin")]);
         }
 
         var equipment = await _equipmentRepository.GetByCodesAsync(request.EquipmentCodes);
@@ -37,8 +38,11 @@ public class UpdateEquipmentUseCase
                     $"Unknown codes: {string.Join(", ", unknownCodes)}")]);
         }
 
-        // TODO: this probably should return some Result
-        car.UpdateEquipment(equipment);
+        var updateResult = car.UpdateEquipment(equipment);
+        if (!updateResult.IsSuccess)
+        {
+            return updateResult;
+        }
 
         await _carRepository.SaveChangesAsync();
 
