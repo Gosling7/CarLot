@@ -32,6 +32,22 @@ internal class ListingConfiguration : IEntityTypeConfiguration<Listing>
         builder.Property(c => c.RegistrationPlate)
             .HasMaxLength(CarSchema.RegistrationPlateMaxLength);
 
+        builder.Property(c => c.FuelType)
+            .HasConversion<string>()
+            .HasMaxLength(CarSchema.EnumMaxLength);
+
+        builder.Property(c => c.Transmission)
+            .HasConversion<string>()
+            .HasMaxLength(CarSchema.EnumMaxLength);
+
+        builder.Property(c => c.DriveType)
+            .HasConversion<string>()
+            .HasMaxLength(CarSchema.EnumMaxLength);
+
+        builder.Property(c => c.Status)
+            .HasConversion<string>()
+            .HasMaxLength(CarSchema.EnumMaxLength);
+
         builder.Property(c => c.Version)
             .IsConcurrencyToken();
 

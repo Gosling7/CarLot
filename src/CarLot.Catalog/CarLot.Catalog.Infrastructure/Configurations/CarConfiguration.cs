@@ -24,8 +24,16 @@ internal class CarConfiguration : IEntityTypeConfiguration<Car>
 
         builder.OwnsOne(c => c.Engine, engine =>
         {
-            engine.Property(e => e.FuelType).HasColumnName("FuelType");
-            engine.Property(e => e.AdditionalFuelType).HasColumnName("AdditionalFuelType");
+            engine.Property(e => e.FuelType)
+                .HasColumnName("FuelType")
+                .HasConversion<string>()
+                .HasMaxLength(CarSchema.EnumMaxLength);
+
+            engine.Property(e => e.AdditionalFuelType)
+                .HasColumnName("AdditionalFuelType")
+                .HasConversion<string>()
+                .HasMaxLength(CarSchema.EnumMaxLength);
+
             engine.Property(e => e.PowerHp).HasColumnName("PowerHp");
             engine.Property(e => e.EngineDisplacement).HasColumnName("EngineDisplacement");
             engine.Property(e => e.Turbocharged).HasColumnName("Turbocharged");
@@ -45,6 +53,18 @@ internal class CarConfiguration : IEntityTypeConfiguration<Car>
 
         builder.Property(c => c.RegistrationPlate)
             .HasMaxLength(CarSchema.RegistrationPlateMaxLength);
+
+        builder.Property(c => c.Transmission)
+            .HasConversion<string>()
+            .HasMaxLength(CarSchema.EnumMaxLength);
+
+        builder.Property(c => c.DriveType)
+            .HasConversion<string>()
+            .HasMaxLength(CarSchema.EnumMaxLength);
+
+        builder.Property(c => c.Status)
+            .HasConversion<string>()
+            .HasMaxLength(CarSchema.EnumMaxLength);
 
         builder.Property(c => c.Version)
             .IsConcurrencyToken();
