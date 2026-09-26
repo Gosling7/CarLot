@@ -1,3 +1,4 @@
+import { CarStatus } from "@/types/CarDto";
 import Card from "@/components/Card"
 import { useFetchCars } from "../hooks/useFetchCars";
 
@@ -16,7 +17,7 @@ export const NeedEditCarsTable = () => {
   } = useFetchCars({
     isExpanded: true,
     pageSize: 20,
-    statuses: [1],
+    statuses: [CarStatus.NeedUpdate],
     search: "",
     queryKey: ["needEditCars"]
   })

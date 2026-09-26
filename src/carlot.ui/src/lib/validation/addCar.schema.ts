@@ -14,7 +14,7 @@ export const AddCarSchema = z.object({
   mileageKm: z.number().min(0),
 
   fuelType: z.enum(FuelType),
-  additionalFuelType: z.enum(AdditionalFuelType),
+  additionalFuelType: z.enum(AdditionalFuelType).nullable(),
   transmission: z.enum(TransmissionType),
   driveType: z.enum(DriveType),
 

@@ -1,3 +1,4 @@
+import { CarStatus } from "@/types/CarDto";
 import { useState } from "react"
 import { ExpandableSection } from "../../../components/ExpandableSection"
 import { Table } from "../../../components/Table"
@@ -21,7 +22,7 @@ export const ArchivedCarsExpandable = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = useFetchCars({ isExpanded: isExpanded, search: debouncedSearch, pageSize: PAGE_SIZE, queryKey: ["archivedCars", debouncedSearch], statuses: [0, 1] });
+  } = useFetchCars({ isExpanded: isExpanded, search: debouncedSearch, pageSize: PAGE_SIZE, queryKey: ["archivedCars", debouncedSearch], statuses: [CarStatus.Received, CarStatus.NeedUpdate] });
 
   const cars = data?.pages.flatMap((page) => page.items) ?? [];
   const totalItems = data?.pages[0]?.totalItemsCount ?? 0;

@@ -1,4 +1,4 @@
-﻿using CarLot.Catalog.Domain.Enums;
+﻿using CarLot.Core;
 
 namespace CarLot.Catalog.Application.DTOs;
 

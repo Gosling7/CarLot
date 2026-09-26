@@ -2,6 +2,6 @@
 
 public enum AdditionalFuelType
 {
-    LGP,
+    LPG,
     CNG
 }

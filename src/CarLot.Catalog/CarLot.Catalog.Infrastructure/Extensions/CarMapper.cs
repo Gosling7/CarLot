@@ -16,7 +16,7 @@ internal static class CarMapper
             Year: car.Year,
             FuelType: car.Engine.FuelType,
             Transmission: car.Transmission,
-            AdditionalFuelType: car.Engine.AdditionalFuelType.GetValueOrDefault(),
+            AdditionalFuelType: car.Engine.AdditionalFuelType,
             PowerHp: car.Engine.PowerHp,
             EngineDisplacement: car.Engine.EngineDisplacement,
             Turbocharged: car.Engine.Turbocharged,

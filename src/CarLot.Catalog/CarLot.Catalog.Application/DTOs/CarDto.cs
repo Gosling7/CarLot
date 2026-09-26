@@ -1,4 +1,4 @@
-﻿using CarLot.Catalog.Domain.Enums;
+﻿using CarLot.Core;
 
 namespace CarLot.Catalog.Application.DTOs;
 
@@ -9,14 +9,14 @@ public record CarDto(
     string Model,
     int Year,
     FuelType FuelType,
-    TransmissionType Transmission,
-    AdditionalFuelType AdditionalFuelType,
+    Transmission Transmission,
+    AdditionalFuelType? AdditionalFuelType,
     int PowerHp,
     float? EngineDisplacement,
     bool Turbocharged,
     string Body,
     string RegistrationPlate,
-    Domain.Enums.DriveType DriveType,
+    CarLot.Core.DriveType DriveType,
     int MileageKm,
     string Location,
     int Version,

@@ -1,4 +1,5 @@
 ﻿using CarLot.Core;
+using CarLot.Core.Serialization;
 using CarLot.Listings.Application.DTOs;
 using CarLot.Listings.Application.Interfaces;
 using System.Net;
@@ -35,7 +36,7 @@ public class CatalogClient : ICatalogClient
 
         response.EnsureSuccessStatusCode();
 
-        var car = await response.Content.ReadFromJsonAsync<CarDto>(cancellationToken);
+        var car = await response.Content.ReadFromJsonAsync<CarDto>(JsonDefaults.Web, cancellationToken);
         return Result<CarDto?>.Success(car);
     }
 }

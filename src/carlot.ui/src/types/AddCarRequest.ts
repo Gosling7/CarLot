@@ -11,7 +11,7 @@ export interface AddCarRequest {
   model: string;
   year: number;
   fuelType: FuelType;
-  additionalFuelType: AdditionalFuelType;
+  additionalFuelType: AdditionalFuelType | null;
   transmission: TransmissionType;
   powerHp: number;
   engineDisplacement?: number;

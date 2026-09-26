@@ -1,5 +1,5 @@
-using CarLot.Catalog.Domain.Enums;
 using CarLot.Catalog.Domain.Events;
+using CarLot.Core;
 using CarLot.Catalog.Domain.ValueObjects;
 
 namespace CarLot.Catalog.Domain.Entities;
@@ -24,10 +24,10 @@ public class Car
     public string Model { get; private set; }
     public int Year { get; private set; }
     public Engine Engine { get; private set; }
-    public TransmissionType Transmission { get; private set; }
+    public Transmission Transmission { get; private set; }
     public string Body { get; private set; }
     public string RegistrationPlate { get; private set; }
-    public Enums.DriveType DriveType { get; private set; }
+    public Core.DriveType DriveType { get; private set; }
     public int MileageKm { get; private set; }
     public string Location { get; private set; }
     public int Version { get; private set; } = 1;
@@ -48,10 +48,10 @@ public class Car
         string model,
         int year,
         Engine engine,
-        TransmissionType transmission,
+        Transmission transmission,
         string body,
         string registrationPlate,
-        Enums.DriveType driveType,
+        Core.DriveType driveType,
         int mileageKm,
         string location,
         IEnumerable<Equipment> equipment)
@@ -82,10 +82,10 @@ public class Car
         string model,
         int year,
         Engine engine,
-        TransmissionType transmission,
+        Transmission transmission,
         string body,
         string registrationPlate,
-        Enums.DriveType driveType,
+        Core.DriveType driveType,
         int mileageKm,
         string location,
         List<Equipment> equipment,
@@ -164,10 +164,10 @@ public class Car
         string model,
         int year,
         Engine engine,
-        TransmissionType transmission,
+        Transmission transmission,
         string body,
         string registrationPlate,
-        Enums.DriveType driveType,
+        Core.DriveType driveType,
         int mileageKm,
         string location,
         List<Equipment> equipment)
@@ -197,7 +197,7 @@ public class Car
         return Result.Success();
     }
 
-    private static List<Error> ValidateInvariants(int year, int mileageKm, Engine engine, TransmissionType transmission)
+    private static List<Error> ValidateInvariants(int year, int mileageKm, Engine engine, Transmission transmission)
     {
         var errors = new List<Error>();
 
@@ -211,7 +211,7 @@ public class Car
             errors.Add(new Error(nameof(MileageKm), "Mileage cannot be negative."));
         }
 
-        if (engine.FuelType == FuelType.Electric && transmission != TransmissionType.Automatic)
+        if (engine.FuelType == FuelType.Electric && transmission != Transmission.Automatic)
         {
             errors.Add(new Error(nameof(Transmission), "Electric cars must use automatic transmission."));
         }

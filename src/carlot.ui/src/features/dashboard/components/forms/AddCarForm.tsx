@@ -25,10 +25,10 @@ const initialAddCarRequest: AddCarRequest = {
   model: "",
   year: 0,
   fuelType: FuelType.Petrol,
-  additionalFuelType: AdditionalFuelType.None,
+  additionalFuelType: null,
   transmission: TransmissionType.Manual,
   powerHp: 0,
-  engineDisplacement: undefined,
+  engineDisplacement: 0,
   turbocharged: false,
   body: "",
   registrationPlate: "",
@@ -139,7 +139,9 @@ export const AddCarForm = () => {
             />
             <SelectRHF
               label={"Additional Fuel Type"}
-              options={AdditionalFuelType} {...register("additionalFuelType")}
+              emptyLabel={"— None —"}
+              options={AdditionalFuelType}
+              {...register("additionalFuelType", { setValueAs: v => v === "" ? null : v })}
             />
             <SelectRHF
               label={"Drive Type"}

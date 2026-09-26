@@ -2,8 +2,9 @@
 using CarLot.Catalog.Application.Queries;
 using CarLot.Catalog.Application.UseCases;
 using CarLot.Catalog.Domain;
-using CarLot.Catalog.Domain.Enums;
+using CarLot.Core;
 using Microsoft.AspNetCore.Mvc;
+using Error = CarLot.Catalog.Domain.Error;
 
 namespace CarLot.Catalog.API.Controllers;
 

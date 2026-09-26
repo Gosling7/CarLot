@@ -11,7 +11,7 @@ public record CarDto(
     int Year,
     FuelType FuelType,
     Transmission Transmission,
-    AdditionalFuelType AdditionalFuelType,
+    AdditionalFuelType? AdditionalFuelType,
     int PowerHp,
     float? EngineDisplacement,
     bool Turbocharged,

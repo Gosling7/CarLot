@@ -1,3 +1,4 @@
+import { CarStatus } from "@/types/CarDto";
 import Card from "@/components/Card"
 import { useFetchCars } from "../hooks/useFetchCars";
 
@@ -15,7 +16,7 @@ export const ReadyForListingCarsTable = () => {
   } = useFetchCars({
     isExpanded: true,
     pageSize: 20,
-    statuses: [0],
+    statuses: [CarStatus.Received],
     search: "",
     queryKey: ["needListingCars"]
   })

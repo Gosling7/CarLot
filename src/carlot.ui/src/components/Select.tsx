@@ -1,26 +1,54 @@
 import type { Ref } from "react";
 
+// type Props = {
+//   label: string;
+//   options: any;
+//   value: any;
+//   onChange: (value: string) => void;
+// }
+
+// export const Select = ({ label, options, value, onChange }: Props) => {
+//   const enumValues = getEnumValues(options);
+
+//   return (
+//     <fieldset className="fieldset mx-2">
+//       <legend className="fieldset-legend">{label}</legend>
+//       <select
+//         className="select select-sm rounded-lg w-full"
+//         onChange={(e) => onChange(e.target.value)}
+//         value={value}
+//       >
+//         {enumValues.map(value => (
+//           <option key={value} value={value}>
+//             {value}
+//           </option>
+//         ))}
+//       </select>
+//     </fieldset>
+//   )
+// }
+
 type Props = {
   label: string;
-  options: any;
-  value: any;
-  onChange: (value: number) => void;
+  options: Record<string, string>;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 export const Select = ({ label, options, value, onChange }: Props) => {
-  const enumNumberValues = getEnumNumberValues(options);
+  const enumValues = getEnumValues(options);
 
   return (
     <fieldset className="fieldset mx-2">
       <legend className="fieldset-legend">{label}</legend>
       <select
         className="select select-sm rounded-lg w-full"
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => onChange(e.target.value)}
         value={value}
       >
-        {enumNumberValues.map(intValue => (
-          <option key={intValue} value={intValue}>
-            {options[intValue]}
+        {enumValues.map(value => (
+          <option key={value} value={value}>
+            {value}
           </option>
         ))}
       </select>
@@ -30,12 +58,13 @@ export const Select = ({ label, options, value, onChange }: Props) => {
 
 type SelectProps = {
   label: string;
-  options: Record<string, string | number>;
+  options: Record<string, string>;
+  emptyLabel?: string;
   ref?: Ref<HTMLSelectElement>;
 }
 
-export const SelectRHF = ({ label, options, ref }: SelectProps) => {
-  const enumNumberValues = getEnumNumberValues(options);
+export const SelectRHF = ({ label, options, emptyLabel, ref }: SelectProps) => {
+  const enumValues = getEnumValues(options);
 
   return (
     <fieldset className="fieldset mx-2">
@@ -44,9 +73,10 @@ export const SelectRHF = ({ label, options, ref }: SelectProps) => {
         className="select select-sm rounded-lg w-full"
         ref={ref}
       >
-        {enumNumberValues.map(intValue => (
-          <option key={intValue} value={intValue}>
-            {options[intValue]}
+        {emptyLabel && <option value="">{emptyLabel}</option>}
+        {enumValues.map(value => (
+          <option key={value} value={value}>
+            {value}
           </option>
         ))}
       </select>
@@ -56,8 +86,8 @@ export const SelectRHF = ({ label, options, ref }: SelectProps) => {
 
 export default Select;
 
-function getEnumNumberValues<T extends Record<string, string | number>>(
+function getEnumValues<T extends Record<string, string>>(
   enumObject: T
-): number[] {
-  return Object.values(enumObject).filter(v => typeof v === "number");
+): string[] {
+  return Object.values(enumObject);
 }

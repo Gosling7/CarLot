@@ -5,7 +5,6 @@ import { DashboardModal } from "../DashboardModal";
 import { CloseModalButton } from "../CloseModalButton";
 import { Section } from "@/components/Section";
 import { Button } from "@/components/Button";
-import { CarStatus } from "@/types/CarDto";
 import { useFetchCarByVin } from "../../hooks/useFetchCarByVin";
 import { useForm } from "react-hook-form";
 import type { AddListingRequest } from "@/types/AddListingRequest";
@@ -17,6 +16,7 @@ import type { ProblemDetails } from "@/types/ProblemDetails";
 import { setErrorsInForm } from "@/lib/FormUtils";
 import { Form } from "@/components/Form";
 import { TextAreaZod } from "@/components/TextArea";
+import { ListingStatus } from "@/types/enums/ListingStatus";
 
 type Car = {
   vin: string;
@@ -180,7 +180,7 @@ export const CreateListingForm = () => {
               <div>
                 <p className="opacity-60">Status</p>
                 <span className="badge badge-outline">
-                  {CarStatus[car.status]}
+                  {car.status}
                 </span>
               </div>
 
@@ -238,7 +238,7 @@ export const CreateListingForm = () => {
                 />
                 <Select
                   label="Status"
-                  options={["Active", "Draft", "Archived"]}
+                  options={ListingStatus}
                   value={status}
                   onChange={(val) => setStatus(val as typeof status)}
                 />

@@ -8,7 +8,7 @@ export interface CarDto {
   year: number;
   fuelType: FuelType;
   transmission: TransmissionType;
-  additionalFuelType: AdditionalFuelType;
+  additionalFuelType: AdditionalFuelType | null;
   powerHp: number;
   engineDisplacement?: number;
   turbocharged: boolean;
@@ -25,33 +25,36 @@ export interface CarDto {
 }
 
 export enum FuelType {
-  Petrol,
-  Diesel,
-  Electric,
-  Hybrid,
+  Petrol = "Petrol",
+  Diesel = "Diesel",
+  Electric = "Electric",
+  Hybrid = "Hybrid",
+  LPG = "LPG",
 }
 
 export enum AdditionalFuelType {
-  None,
-  LPG,
-  CNG,
+  LPG = "LPG",
+  CNG = "CNG",
 }
 
 export enum TransmissionType {
-  Manual,
-  Automatic,
+  Manual = "Manual",
+  Automatic = "Automatic",
+  SemiAutomatic = "SemiAutomatic",
+  CVT = "CVT",
 }
 
 export enum DriveType {
-  FWD,
-  RWD,
-  AWD,
-  FourWD,
+  FWD = "FWD",
+  RWD = "RWD",
+  AWD = "AWD",
+  FourWD = "FourWD",
 }
 
 export enum CarStatus {
-  Received,
-  Active,
-  Inactive,
-  Sold,
+  Received = "Received",
+  NeedUpdate = "NeedUpdate",
+  ReadyForListing = "ReadyForListing",
+  LiveListing = "LiveListing",
+  Archived = "Archived",
 }

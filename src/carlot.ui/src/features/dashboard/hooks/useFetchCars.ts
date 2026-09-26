@@ -24,7 +24,7 @@ export function useFetchCars({
       params.append("search", search);
       params.append("page", String(pageParam));
       params.append("pagesize", String(pageSize));
-      statuses.forEach((s) => params.append("status", String(s)));
+      statuses.forEach((s) => params.append("status", s));
       const response = await api.get(`/cars?${params}`);
       return response.data;
     },

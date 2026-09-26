@@ -1,5 +1,5 @@
 export enum ListingStatus {
-  Draft,
-  Live,
-  Archived,
+  Draft = "Draft",
+  Live = "Live",
+  Archived = "Archived",
 }

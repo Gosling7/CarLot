@@ -1,11 +1,10 @@
 import { Input, InputZod } from "@/components/Input";
-import Select, { SelectRHF } from "@/components/Select";
+import { SelectRHF } from "@/components/Select";
 import { useEffect, useState } from "react";
 import { DashboardModal } from "../DashboardModal";
 import { CloseModalButton } from "../CloseModalButton";
 import { Section } from "@/components/Section";
 import { Button } from "@/components/Button";
-import { CarStatus } from "@/types/CarDto";
 import { useFetchCarByVin } from "../../hooks/useFetchCarByVin";
 import { useUpdateListing } from "../../hooks/useUpdateListing";
 import { Form } from "@/components/Form";
@@ -170,7 +169,7 @@ export const EditListingForm = () => {
               <div>
                 <p className="opacity-60">Status</p>
                 <span className="badge badge-outline">
-                  {CarStatus[car.status]}
+                  {car.status}
                 </span>
               </div>
 
@@ -205,7 +204,7 @@ export const EditListingForm = () => {
                 {/* TODO: clean up the mess with Select, why rhf and not zod like InputZod */}
                 <SelectRHF
                   label="Status"
-                  options={["Active", "Draft", "Archived"]}
+                  options={ListingStatus}
                   value={status}
                   onChange={(val) => setStatus(val as typeof status)}
                 />

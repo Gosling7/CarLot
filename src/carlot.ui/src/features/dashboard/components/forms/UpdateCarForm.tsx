@@ -95,7 +95,7 @@ export const UpdateCarForm = () => {
         <Select
           label="Status"
           options={CarStatus}
-          onChange={(e) => setStatus(e)}
+          onChange={(e) => setStatus(e as CarStatus)}
           value={status}
         />
         <Button label="Save Status" onClick={() => updateStatus()} />
@@ -162,7 +162,7 @@ export const UpdateCarForm = () => {
               <div>
                 <p className="opacity-60">Status</p>
                 <span className="badge badge-outline">
-                  {CarStatus[car.status]}
+                  {car.status}
                 </span>
               </div>
 

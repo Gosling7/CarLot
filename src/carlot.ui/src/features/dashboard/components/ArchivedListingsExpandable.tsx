@@ -1,3 +1,4 @@
+import { CarStatus } from "@/types/CarDto";
 import { useDebounce } from "@/hooks";
 import { useState } from "react";
 import { useFetchCars } from "../hooks/useFetchCars";
@@ -20,7 +21,7 @@ export const ArchivedListingsExpandable = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = useFetchCars({ isExpanded: isExpanded, search: debouncedSearch, pageSize: PAGE_SIZE, queryKey: ["archivedCars", debouncedSearch], statuses: [0, 1] });
+  } = useFetchCars({ isExpanded: isExpanded, search: debouncedSearch, pageSize: PAGE_SIZE, queryKey: ["archivedCars", debouncedSearch], statuses: [CarStatus.Received, CarStatus.NeedUpdate] });
 
   const cars = data?.pages.flatMap((page) => page.items) ?? [];
   const totalItems = data?.pages[0]?.totalItemsCount ?? 0;

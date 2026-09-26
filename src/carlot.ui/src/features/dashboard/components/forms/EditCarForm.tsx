@@ -119,7 +119,7 @@ export const EditCarForm = () => {
                 <InputZod label="Engine Displacement" {...register("engineDisplacement", { valueAsNumber: true })} error={errors.engineDisplacement?.message} />
                 <SelectRHF label="Transmission" options={TransmissionType} {...register("transmission")} />
                 <SelectRHF label="Fuel Type" options={FuelType} {...register("fuelType")} />
-                <SelectRHF label="Additional Fuel Type" options={AdditionalFuelType} {...register("additionalFuelType")} />
+                <SelectRHF label="Additional Fuel Type" emptyLabel={"— None —"} options={AdditionalFuelType} {...register("additionalFuelType", { setValueAs: v => v === "" ? null : v })} />
                 <SelectRHF label="Drive Type" options={DriveType} {...register("driveType")} />
                 <InputZod label="Body Type" {...register("body")} error={errors.body?.message} />
                 <InputZod label="Registration" {...register("registrationPlate")} error={errors.registrationPlate?.message} />
