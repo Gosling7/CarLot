@@ -1,9 +1,8 @@
-import { DashboardHeader } from "./DashboardHeader";
-import { DashboardMainStats } from "./DashboardMainStats";
-import { DashboardTablesSection } from "./DashboardTablesSection";
-import { CarsReadyForListingMainTabTable } from "./CarsReadyForListingMainTabTable";
-import { CarsNeedEditMainTabTable } from "./CarsNeedEditMainTabTable";
-import { DraftListingsMainTabTable } from "./DraftListingsMainTabTable";
+import { DashboardHeader } from "@/features/dashboard/components/DashboardHeader";
+import { DashboardMainStats } from "@/features/dashboard/components/DashboardMainStats";
+import { DashboardTablesSection } from "@/features/dashboard/components/DashboardTablesSection";
+import { CarsReadyForListingMainTabTable, CarsNeedEditMainTabTable } from "@/features/cars";
+import { DraftListingsMainTabTable } from "@/features/listings";
 
 export const MainDashboardTab = () => {
 

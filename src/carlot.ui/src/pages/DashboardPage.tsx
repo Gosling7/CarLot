@@ -1,6 +1,4 @@
-import { MainDashboardTab } from "@/features/dashboard/components/MainDashboardTab";
-import { CarsDashboardTab } from "@/features/dashboard/components/CarsDashboardTab";
-import { ListingsDashboardTab } from "@/features/dashboard/components/ListingsDashboardTab";
+import { MainDashboardTab, CarsDashboardTab, ListingsDashboardTab } from "@/features/dashboard";
 
 
 export default function DashboardPage() {

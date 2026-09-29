@@ -1,5 +1,5 @@
-import StatCard from "@/components/StatCard"
-import { StatCardsSection } from "@/components/StatCardsSection"
+import StatCard from "@/shared/ui/StatCard"
+import { StatCardsSection } from "@/shared/ui/StatCardsSection"
 
 interface Car {
   vin: string;

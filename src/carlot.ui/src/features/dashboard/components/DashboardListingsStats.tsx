@@ -1,5 +1,5 @@
-import StatCard from "@/components/StatCard"
-import { StatCardsSection } from "@/components/StatCardsSection"
+import StatCard from "@/shared/ui/StatCard"
+import { StatCardsSection } from "@/shared/ui/StatCardsSection"
 
 const mockListings: Listing[] = [
   { id: "1", carName: "Audi A3", vin: "5N1AT2MK4FC824170", status: "draft", price: 21000, createdAt: "2026-01-15" },

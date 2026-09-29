@@ -1,13 +1,9 @@
-import { CreateListingForm } from "./forms/CreateListingForm";
-import { EditListingForm } from "./forms/EditListingForm";
-import { DashboardHeader } from "./DashboardHeader";
-import { DashboardListingsStats } from "./DashboardListingsStats";
-import { DashboardActionsSection } from "./DashboardActionsSection";
-import { DashboardActionButton } from "./DashboardActionButton";
-import { DashboardTablesSection } from "./DashboardTablesSection";
-import { DraftListingsTable } from "./DraftListingsTable";
-import { LiveListingsExpandable } from "./LiveListingsExpandable";
-import { ArchivedListingsExpandable } from "./ArchivedListingsExpandable";
+import { CreateListingForm, EditListingForm, DraftListingsTable, LiveListingsExpandable, ArchivedListingsExpandable } from "@/features/listings";
+import { DashboardHeader } from "@/features/dashboard/components/DashboardHeader";
+import { DashboardListingsStats } from "@/features/dashboard/components/DashboardListingsStats";
+import { DashboardActionsSection } from "@/features/dashboard/components/DashboardActionsSection";
+import { DashboardActionButton } from "@/features/dashboard/components/DashboardActionButton";
+import { DashboardTablesSection } from "@/features/dashboard/components/DashboardTablesSection";
 
 export const ListingsDashboardTab = () => {
   return (
