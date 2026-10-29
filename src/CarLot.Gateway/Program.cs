@@ -5,7 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Configuration.AddOcelot();
+// Containers use ocelot.Docker.json (downstreams via host.docker.internal), host runs use ocelot.json (localhost)
+builder.Configuration.AddJsonFile(
+    builder.Configuration["OcelotConfigFile"] ?? "ocelot.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddOcelot(builder.Configuration);
 

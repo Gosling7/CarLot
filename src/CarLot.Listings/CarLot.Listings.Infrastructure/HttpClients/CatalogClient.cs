@@ -22,7 +22,7 @@ public class CatalogClient : ICatalogClient
 
         try
         {
-            response = await _httpClient.GetAsync($"http://localhost:5000/api/cars/{vin}", cancellationToken);
+            response = await _httpClient.GetAsync($"api/cars/{vin}", cancellationToken);
         }
         catch (HttpRequestException)
         {

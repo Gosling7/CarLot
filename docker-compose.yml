@@ -1,23 +1,96 @@
+# Every .NET service publishes the same port its launchSettings "http" profile uses, and containers
+# call each other via host.docker.internal:<port>. That way any single service can be stopped here
+# and run from Visual Studio instead, without changing any addresses. See scripts/dev.ps1.
+
+x-dotnet: &dotnet
+  restart: unless-stopped
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+x-dotnet-env: &dotnet-env
+  ASPNETCORE_ENVIRONMENT: Development
+
 services:
-  carlot.catalog.api:
-    image: ${DOCKER_REGISTRY-}carlotcatalogapi
-    ports:
-      - 8080:8080
-      - 8081:8081
+  catalog:
+    <<: *dotnet
+    container_name: catalog
     build:
       context: .
       dockerfile: src/CarLot.Catalog/CarLot.Catalog.API/Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      <<: *dotnet-env
+      ASPNETCORE_HTTP_PORTS: "5001"
+      ConnectionStrings__DefaultConnection: "Data Source=mssql,1433;Initial Catalog=CarLot.Catalog;User ID=sa;Password=${SA_PASSWORD};Encrypt=False;Trust Server Certificate=True"
+    depends_on:
+      mssql:
+        condition: service_healthy
+
+  listings:
+    <<: *dotnet
+    container_name: listings
+    build:
+      context: .
+      dockerfile: src/CarLot.Listings/CarLot.Listings.API/Dockerfile
+    ports:
+      - "5002:5002"
+    environment:
+      <<: *dotnet-env
+      ASPNETCORE_HTTP_PORTS: "5002"
+      ConnectionStrings__DefaultConnection: "Data Source=mssql,1433;Initial Catalog=CarLot.Listing;User ID=sa;Password=${SA_PASSWORD};Encrypt=False;Trust Server Certificate=True"
+      Services__CatalogApi: "http://host.docker.internal:5001"
+    depends_on:
+      mssql:
+        condition: service_healthy
+
+  gateway:
+    <<: *dotnet
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: src/CarLot.Gateway/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      <<: *dotnet-env
+      ASPNETCORE_HTTP_PORTS: "5000"
+      OcelotConfigFile: ocelot.Docker.json
+
+  ui:
+    image: node:22-alpine
+    container_name: ui
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      API_PROXY_TARGET: "http://host.docker.internal:5000"
+      VITE_USE_POLLING: "1"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./src/carlot.ui:/app
+      # Keep the Linux node_modules separate from the host's Windows-built one
+      - /app/node_modules
+    restart: unless-stopped
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-CU21-ubuntu-22.04
-    container_name: carlot-mssql
+    container_name: mssql
     environment:
-      SA_PASSWORD: "Password1!"
+      SA_PASSWORD: "${SA_PASSWORD}"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
     volumes:
-      -  carlot-mssql-data:/var/opt/mssql
+      - carlot-mssql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$SA_PASSWORD\" -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   seq:
     image: datalust/seq:2025.2
@@ -33,5 +106,5 @@ services:
 
 volumes:
   carlot-mssql-data:
-  seq-data: 
+  seq-data:
     driver: local

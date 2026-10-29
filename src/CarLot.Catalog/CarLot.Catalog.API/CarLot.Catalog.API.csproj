@@ -6,9 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f851c438-6280-49fa-a44e-989583d7dc48</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..</DockerfileContext>
-    <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
-  </PropertyGroup>
+    <DockerfileContext>..\..\..</DockerfileContext>  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">

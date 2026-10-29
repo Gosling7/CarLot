@@ -38,7 +38,9 @@ public static class DependencyInjection
         }
 
         services
-            .AddHttpClient<ICatalogClient, CatalogClient>();
+            .AddHttpClient<ICatalogClient, CatalogClient>(client =>
+                client.BaseAddress = new Uri(configuration["Services:CatalogApi"]
+                    ?? throw new InvalidOperationException("Missing configuration value 'Services:CatalogApi'.")));
 
         services
             .AddScoped<IListingRepository, ListingRepository>();

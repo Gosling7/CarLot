@@ -20,9 +20,12 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    host: true,
+    // Bind-mounted sources on Windows don't emit file events inside a Linux container
+    watch: process.env.VITE_USE_POLLING ? { usePolling: true } : undefined,
     proxy: {
       "/api": {
-        target: "http://localhost:5000",
+        target: process.env.API_PROXY_TARGET ?? "http://localhost:5000",
         changeOrigin: true,
         secure: false,
         ws: true,
